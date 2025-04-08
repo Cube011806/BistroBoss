@@ -5,6 +5,7 @@ namespace BistroBoss.Models
 {
     public class Status
     {
+        [Key]
         public int Id { get; set; }
         [MaxLength(15)]
         public string Nazwa { get; set; } = string.Empty;

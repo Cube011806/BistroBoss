@@ -4,6 +4,7 @@ namespace BistroBoss.Models
 {
     public class Kategoria
     {
+        [Key]
         public int Id { get; set; }
         [MaxLength(50)]
         public string Nazwa { get; set; } = string.Empty;

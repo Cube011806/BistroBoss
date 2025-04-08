@@ -4,6 +4,7 @@ namespace BistroBoss.Models
 {
     public class Dostawa
     {
+        [Key]
         public int Id { get; set; }
         [MaxLength(50)]
         public string Miejscowosc { get; set; } = string.Empty;

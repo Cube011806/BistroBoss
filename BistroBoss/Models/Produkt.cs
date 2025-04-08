@@ -4,6 +4,7 @@ namespace BistroBoss.Models
 {
     public class Produkt
     {
+        [Key]
         public int Id { get; set; }
         [MaxLength(60)]
         public string Nazwa { get; set; } = string.Empty;
