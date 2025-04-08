@@ -1,0 +1,67 @@
+﻿@model Produkt
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "BistroBoss - Dodaj produkt!";
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+        <strong>@TempData["ErrorMessage"]</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+        <strong>@TempData["SuccessMessage"]</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="container py-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="mb-0">Dodaj produkt</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="Product" asp-action="Add" method="post">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label asp-for="Nazwa" class="form-label">Nazwa</label>
+                                    <input type="text" class="form-control shadow-sm" asp-for="Nazwa" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label asp-for="Opis" class="form-label">Opis</label>
+                                    <textarea class="form-control shadow-sm" asp-for="Opis" rows="5" required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label asp-for="Cena" class="form-label">Cena</label>
+                                    <input type="number" class="form-control shadow-sm" asp-for="Cena" required min="0", step="0.01"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label asp-for="CzasPrzygotowania" class="form-label">Czas przygotowania</label>
+                                    <input type="number" class="form-control shadow-sm" asp-for="CzasPrzygotowania" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label asp-for="KategoriaId" class="form-label">Kategoria</label>
+                                    <select asp-for="KategoriaId" class="form-select shadow-sm" asp-items="ViewBag.ListaKategorii">
+                                        <option value="" disabled selected>-- Wybierz kategorię produktu --</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-success btn-lg shadow-sm">Dodaj produkt</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

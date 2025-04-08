@@ -1,5 +1,8 @@
-﻿@{
-    ViewData["Title"] = "BistroBoss";
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "BistroBoss - Zarządzanie restauracją";
 }
 
 @if (TempData["ErrorMessage"] != null)
@@ -18,6 +21,7 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core TEST TEST</a>.</p>
+    <a asp-controller="Product" asp-action="Add" class="btn btn-success btn-lg">
+        Dodaj produkt
+    </a>
 </div>
