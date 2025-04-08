@@ -14,7 +14,6 @@ namespace BistroBoss.Models
         public int DostawaId { get; set; }
         public virtual Dostawa Dostawa { get; set; } = null!;
         public int? OpiniaId { get; set; }
-        //[ForeignKey(nameof(Opinia))]
         public virtual Opinia Opinia { get; set; } = null!;
         public string? UzytkownikId { get; set; }
         public virtual Uzytkownik Uzytkownik { get; set; } = null!;
