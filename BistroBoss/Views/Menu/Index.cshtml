@@ -1,0 +1,27 @@
+﻿@model ICollection<Kategoria>
+
+@{
+    ViewData["Title"] = "Menu";
+}
+<div>
+    @foreach (var kategoria in Model)
+    {
+        <h1>@kategoria.Nazwa</h1>
+        @foreach(var produkt in kategoria.Produkty){
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h5 class="card-title">@produkt.Nazwa</h5>
+                    <p class="card-text">@produkt.Opis</p>
+                    <p class="card-text">Cena: @produkt.Cena.ToString("C")</p>
+                    <a asp-action="Details" asp-route-id="@produkt.Id" class="btn btn-primary">
+                        Szczegóły
+                    </a>
+                    <a asp-action="AddToBasket" asp-route-id="@produkt.Id" class="btn btn-primary">
+                        Dodaj do koszyka
+                    </a>
+
+                </div>
+            </div>
+        }
+    }
+</div>
