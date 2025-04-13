@@ -42,11 +42,11 @@
                                 </div>
                                 <div class="mb-3">
                                     <label asp-for="Cena" class="form-label">Cena</label>
-                                    <input type="number" class="form-control shadow-sm" asp-for="Cena" required min="0", step="0.01"/>
+                                    <input type="number" class="form-control shadow-sm" asp-for="Cena" required min="0.01", step="0.01"/>
                                 </div>
                                 <div class="mb-3">
                                     <label asp-for="CzasPrzygotowania" class="form-label">Czas przygotowania</label>
-                                    <input type="number" class="form-control shadow-sm" asp-for="CzasPrzygotowania" required />
+                                    <input type="number" class="form-control shadow-sm" asp-for="CzasPrzygotowania" required min="0" />
                                 </div>
                                 <div class="mb-3">
                                     <label asp-for="KategoriaId" class="form-label">Kategoria</label>
