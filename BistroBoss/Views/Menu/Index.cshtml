@@ -16,7 +16,7 @@
                     <a asp-action="Details" asp-route-id="@produkt.Id" class="btn btn-primary">
                         Szczegóły
                     </a>
-                    <a asp-action="AddToBasket" asp-route-id="@produkt.Id" class="btn btn-primary">
+                    <a asp-action="AddToBasket" asp-controller="Basket" asp-route-id="@produkt.Id" class="btn btn-primary">
                         Dodaj do koszyka
                     </a>
 

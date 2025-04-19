@@ -17,6 +17,8 @@ namespace BistroBoss.Models
         public virtual Opinia Opinia { get; set; } = null!;
         public string? UzytkownikId { get; set; }
         public virtual Uzytkownik Uzytkownik { get; set; } = null!;
-        public virtual ICollection<ZamowienieProdukt> ZamowioneProdukty { get; set; } = new List<ZamowienieProdukt>();
+        //public virtual ICollection<ZamowienieProdukt> ZamowioneProdukty { get; set; } = new List<ZamowienieProdukt>();
+        public virtual Koszyk Koszyk { get; set; }
+        public int KoszykId { get; set; }
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BistroBoss.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250408120418_v3")]
+    [Migration("20250419230526_v3")]
     partial class v3
     {
         /// <inheritdoc />
@@ -77,6 +77,31 @@ namespace BistroBoss.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Kategorie");
+                });
+
+            modelBuilder.Entity("BistroBoss.Models.Koszyk", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("UzytkownikId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ZamowienieId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UzytkownikId")
+                        .IsUnique();
+
+                    b.HasIndex("ZamowienieId");
+
+                    b.ToTable("Koszyki");
                 });
 
             modelBuilder.Entity("BistroBoss.Models.Opinia", b =>
@@ -261,6 +286,9 @@ namespace BistroBoss.Data.Migrations
                     b.Property<int>("DostawaId")
                         .HasColumnType("int");
 
+                    b.Property<int>("KoszykId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("OpiniaId")
                         .HasColumnType("int");
 
@@ -277,6 +305,9 @@ namespace BistroBoss.Data.Migrations
 
                     b.HasIndex("DostawaId");
 
+                    b.HasIndex("KoszykId")
+                        .IsUnique();
+
                     b.HasIndex("OpiniaId")
                         .IsUnique()
                         .HasFilter("[OpiniaId] IS NOT NULL");
@@ -288,27 +319,19 @@ namespace BistroBoss.Data.Migrations
                     b.ToTable("Zamowienia");
                 });
 
-            modelBuilder.Entity("BistroBoss.Models.ZamowienieProdukt", b =>
+            modelBuilder.Entity("KoszykProdukt", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("KoszykiId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ProduktId")
+                    b.Property<int>("ProduktyId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ZamowienieId")
-                        .HasColumnType("int");
+                    b.HasKey("KoszykiId", "ProduktyId");
 
-                    b.HasKey("Id");
+                    b.HasIndex("ProduktyId");
 
-                    b.HasIndex("ProduktId");
-
-                    b.HasIndex("ZamowienieId");
-
-                    b.ToTable("ZamowieniaProdukty");
+                    b.ToTable("KoszykProdukt");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -448,6 +471,25 @@ namespace BistroBoss.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("BistroBoss.Models.Koszyk", b =>
+                {
+                    b.HasOne("BistroBoss.Models.Uzytkownik", "Uzytkownik")
+                        .WithOne("Koszyk")
+                        .HasForeignKey("BistroBoss.Models.Koszyk", "UzytkownikId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BistroBoss.Models.Zamowienie", "Zamowienie")
+                        .WithMany()
+                        .HasForeignKey("ZamowienieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Uzytkownik");
+
+                    b.Navigation("Zamowienie");
+                });
+
             modelBuilder.Entity("BistroBoss.Models.Opinia", b =>
                 {
                     b.HasOne("BistroBoss.Models.Uzytkownik", "Uzytkownik")
@@ -486,6 +528,12 @@ namespace BistroBoss.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BistroBoss.Models.Koszyk", "Koszyk")
+                        .WithOne()
+                        .HasForeignKey("BistroBoss.Models.Zamowienie", "KoszykId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("BistroBoss.Models.Opinia", "Opinia")
                         .WithOne()
                         .HasForeignKey("BistroBoss.Models.Zamowienie", "OpiniaId");
@@ -502,6 +550,8 @@ namespace BistroBoss.Data.Migrations
 
                     b.Navigation("Dostawa");
 
+                    b.Navigation("Koszyk");
+
                     b.Navigation("Opinia");
 
                     b.Navigation("Status");
@@ -509,23 +559,19 @@ namespace BistroBoss.Data.Migrations
                     b.Navigation("Uzytkownik");
                 });
 
-            modelBuilder.Entity("BistroBoss.Models.ZamowienieProdukt", b =>
+            modelBuilder.Entity("KoszykProdukt", b =>
                 {
-                    b.HasOne("BistroBoss.Models.Produkt", "Produkt")
-                        .WithMany("ZamowieniaProduktu")
-                        .HasForeignKey("ProduktId")
+                    b.HasOne("BistroBoss.Models.Koszyk", null)
+                        .WithMany()
+                        .HasForeignKey("KoszykiId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BistroBoss.Models.Zamowienie", "Zamowienie")
-                        .WithMany("ZamowioneProdukty")
-                        .HasForeignKey("ZamowienieId")
+                    b.HasOne("BistroBoss.Models.Produkt", null)
+                        .WithMany()
+                        .HasForeignKey("ProduktyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Produkt");
-
-                    b.Navigation("Zamowienie");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -589,11 +635,6 @@ namespace BistroBoss.Data.Migrations
                     b.Navigation("Produkty");
                 });
 
-            modelBuilder.Entity("BistroBoss.Models.Produkt", b =>
-                {
-                    b.Navigation("ZamowieniaProduktu");
-                });
-
             modelBuilder.Entity("BistroBoss.Models.Status", b =>
                 {
                     b.Navigation("Zamowienia");
@@ -601,14 +642,12 @@ namespace BistroBoss.Data.Migrations
 
             modelBuilder.Entity("BistroBoss.Models.Uzytkownik", b =>
                 {
+                    b.Navigation("Koszyk")
+                        .IsRequired();
+
                     b.Navigation("Opinie");
 
                     b.Navigation("Zamowienia");
-                });
-
-            modelBuilder.Entity("BistroBoss.Models.Zamowienie", b =>
-                {
-                    b.Navigation("ZamowioneProdukty");
                 });
 #pragma warning restore 612, 618
         }

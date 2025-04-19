@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Components.Web.Virtualization;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BistroBoss.Models
@@ -11,7 +12,7 @@ namespace BistroBoss.Models
         public string Komentarz { get; set; } = string.Empty;
         [Range(1, 5, ErrorMessage = "Wartość oceny zamówienia musi być liczbą całkowitą z przedziału od 1 do 5!")]
         public byte Ocena { get; set; }
-        public int ZamowienieId { get; set; }
+        public virtual int ZamowienieId { get; set; }
 
         public virtual Zamowienie Zamowienie { get; set; } = null!;
         public string UzytkownikId { get; set; } = string.Empty;
