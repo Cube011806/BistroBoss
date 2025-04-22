@@ -52,7 +52,7 @@ namespace BistroBoss.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Dostawy");
+                    b.ToTable("Dostawy", (string)null);
                 });
 
             modelBuilder.Entity("BistroBoss.Models.Kategoria", b =>
@@ -73,7 +73,7 @@ namespace BistroBoss.Data.Migrations
                     b.HasIndex("Nazwa")
                         .IsUnique();
 
-                    b.ToTable("Kategorie");
+                    b.ToTable("Kategorie", (string)null);
                 });
 
             modelBuilder.Entity("BistroBoss.Models.Koszyk", b =>
@@ -98,7 +98,7 @@ namespace BistroBoss.Data.Migrations
 
                     b.HasIndex("ZamowienieId");
 
-                    b.ToTable("Koszyki");
+                    b.ToTable("Koszyki", (string)null);
                 });
 
             modelBuilder.Entity("BistroBoss.Models.Opinia", b =>
@@ -131,7 +131,7 @@ namespace BistroBoss.Data.Migrations
                     b.HasIndex("ZamowienieId")
                         .IsUnique();
 
-                    b.ToTable("Opinie");
+                    b.ToTable("Opinie", (string)null);
                 });
 
             modelBuilder.Entity("BistroBoss.Models.Produkt", b =>
@@ -165,7 +165,7 @@ namespace BistroBoss.Data.Migrations
 
                     b.HasIndex("KategoriaId");
 
-                    b.ToTable("Produkty");
+                    b.ToTable("Produkty", (string)null);
                 });
 
             modelBuilder.Entity("BistroBoss.Models.Status", b =>
@@ -186,7 +186,7 @@ namespace BistroBoss.Data.Migrations
                     b.HasIndex("Nazwa")
                         .IsUnique();
 
-                    b.ToTable("Statusy");
+                    b.ToTable("Statusy", (string)null);
                 });
 
             modelBuilder.Entity("BistroBoss.Models.Uzytkownik", b =>
@@ -313,7 +313,7 @@ namespace BistroBoss.Data.Migrations
 
                     b.HasIndex("UzytkownikId");
 
-                    b.ToTable("Zamowienia");
+                    b.ToTable("Zamowienia", (string)null);
                 });
 
             modelBuilder.Entity("KoszykProdukt", b =>
@@ -328,7 +328,7 @@ namespace BistroBoss.Data.Migrations
 
                     b.HasIndex("ProduktyId");
 
-                    b.ToTable("KoszykProdukt");
+                    b.ToTable("KoszykProdukt", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
