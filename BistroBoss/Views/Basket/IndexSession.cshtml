@@ -1,0 +1,38 @@
+﻿@model KoszykSessionDto
+
+@{
+    ViewData["Title"] = "Twój Koszyk (Gość)";
+}
+
+<h1>Twój Koszyk</h1>
+
+@if (!Model.Produkty.Any())
+{
+    <p>Koszyk jest pusty.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Produkt</th>
+                <th>Ilość</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Produkty)
+            {
+                <tr>
+                    <td>@item.Nazwa</td>
+                    <td>@item.Ilosc</td>
+                    <td>
+                        <form asp-action="RemoveFromSessionBasket" asp-route-id="@item.ProduktId" method="post">
+                            <button class="btn btn-danger btn-sm">Usuń</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

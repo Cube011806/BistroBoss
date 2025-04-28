@@ -4,6 +4,7 @@ using BistroBoss.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BistroBoss.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250428190932_v5")]
+    partial class v5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,41 +88,20 @@ namespace BistroBoss.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("UzytkownikId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("ZamowienieId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UzytkownikId")
-                        .IsUnique()
-                        .HasFilter("[UzytkownikId] IS NOT NULL");
+                        .IsUnique();
+
+                    b.HasIndex("ZamowienieId");
 
                     b.ToTable("Koszyki");
-                });
-
-            modelBuilder.Entity("BistroBoss.Models.KoszykProdukt", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Ilosc")
-                        .HasColumnType("int");
-
-                    b.Property<int>("KoszykId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProduktId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("KoszykId");
-
-                    b.HasIndex("ProduktId");
-
-                    b.ToTable("KoszykProdukty");
                 });
 
             modelBuilder.Entity("BistroBoss.Models.Opinia", b =>
@@ -340,6 +322,21 @@ namespace BistroBoss.Data.Migrations
                     b.ToTable("Zamowienia");
                 });
 
+            modelBuilder.Entity("KoszykProdukt", b =>
+                {
+                    b.Property<int>("KoszykiId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProduktyId")
+                        .HasColumnType("int");
+
+                    b.HasKey("KoszykiId", "ProduktyId");
+
+                    b.HasIndex("ProduktyId");
+
+                    b.ToTable("KoszykProdukt");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -481,28 +478,17 @@ namespace BistroBoss.Data.Migrations
                 {
                     b.HasOne("BistroBoss.Models.Uzytkownik", "Uzytkownik")
                         .WithOne("Koszyk")
-                        .HasForeignKey("BistroBoss.Models.Koszyk", "UzytkownikId");
+                        .HasForeignKey("BistroBoss.Models.Koszyk", "UzytkownikId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BistroBoss.Models.Zamowienie", "Zamowienie")
+                        .WithMany()
+                        .HasForeignKey("ZamowienieId");
 
                     b.Navigation("Uzytkownik");
-                });
 
-            modelBuilder.Entity("BistroBoss.Models.KoszykProdukt", b =>
-                {
-                    b.HasOne("BistroBoss.Models.Koszyk", "Koszyk")
-                        .WithMany("KoszykProdukty")
-                        .HasForeignKey("KoszykId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BistroBoss.Models.Produkt", "Produkt")
-                        .WithMany()
-                        .HasForeignKey("ProduktId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Koszyk");
-
-                    b.Navigation("Produkt");
+                    b.Navigation("Zamowienie");
                 });
 
             modelBuilder.Entity("BistroBoss.Models.Opinia", b =>
@@ -574,6 +560,21 @@ namespace BistroBoss.Data.Migrations
                     b.Navigation("Uzytkownik");
                 });
 
+            modelBuilder.Entity("KoszykProdukt", b =>
+                {
+                    b.HasOne("BistroBoss.Models.Koszyk", null)
+                        .WithMany()
+                        .HasForeignKey("KoszykiId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BistroBoss.Models.Produkt", null)
+                        .WithMany()
+                        .HasForeignKey("ProduktyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -633,11 +634,6 @@ namespace BistroBoss.Data.Migrations
             modelBuilder.Entity("BistroBoss.Models.Kategoria", b =>
                 {
                     b.Navigation("Produkty");
-                });
-
-            modelBuilder.Entity("BistroBoss.Models.Koszyk", b =>
-                {
-                    b.Navigation("KoszykProdukty");
                 });
 
             modelBuilder.Entity("BistroBoss.Models.Status", b =>

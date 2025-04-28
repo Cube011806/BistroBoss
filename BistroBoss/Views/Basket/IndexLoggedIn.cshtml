@@ -1,0 +1,44 @@
+﻿@model Koszyk
+
+@{
+    ViewData["Title"] = "Twój Koszyk";
+}
+
+<h1>Twój Koszyk</h1>
+
+@if (!Model.KoszykProdukty.Any())
+{
+    <p>Koszyk jest pusty.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Produkt</th>
+                <th>Ilość</th>
+                <th>Cena jednostkowa</th>
+                <th>Łącznie</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.KoszykProdukty)
+            {
+                <tr>
+                    <td>@item.Produkt.Nazwa</td>
+                    <td>@item.Ilosc</td>
+                    <td>@item.Produkt.Cena.ToString("c")</td>
+                    <td>@(item.Produkt.Cena * item.Ilosc).ToString("c")</td>
+                    <td>
+                        <form asp-action="RemoveFromBasket" asp-route-id="@item.Id" method="post">
+                            <button class="btn btn-danger btn-sm">Usuń</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>Łączna cena: @Model.KoszykProdukty.Sum(p => p.Produkt.Cena * p.Ilosc).ToString("c")</h3>
+}
