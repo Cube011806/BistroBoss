@@ -3,10 +3,27 @@
 @{
     ViewData["Title"] = "Menu";
 }
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+        <strong>@TempData["ErrorMessage"]</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+        <strong>@TempData["SuccessMessage"]</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 <div>
     @foreach (var kategoria in Model)
     {
-        <h1>@kategoria.Nazwa</h1>
+        if(!(kategoria.Produkty.Count == 0 || kategoria.Produkty == null))
+        {
+            <h1>@kategoria.Nazwa</h1>
+        }
         @foreach(var produkt in kategoria.Produkty){
             <div class="card mb-2">
                 <div class="card-body">
@@ -19,7 +36,9 @@
                     <a asp-action="AddToBasket" asp-controller="Basket" asp-route-produktId="@produkt.Id" class="btn btn-primary">
                         Dodaj do koszyka
                     </a>
-
+                    <a asp-action="Edit" asp-controller="Product" asp-route-id="@produkt.Id" class="btn btn-primary">
+                        Edytuj produkt
+                    </a>
                 </div>
             </div>
         }

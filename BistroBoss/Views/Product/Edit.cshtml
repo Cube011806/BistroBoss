@@ -3,7 +3,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "BistroBoss - Dodanie produktu";
+    ViewData["Title"] = "BistroBoss - Edycja produktu";
 }
 
 @if (TempData["ErrorMessage"] != null)
@@ -26,10 +26,10 @@
         <div class="col-lg-8 col-md-10 col-sm-12">
             <div class="card shadow-lg border-0">
                 <div class="card-header bg-primary text-white text-center">
-                    <h3 class="mb-0">Dodaj produkt</h3>
+                    <h3 class="mb-0">Edytuj produkt</h3>
                 </div>
                 <div class="card-body">
-                    <form asp-controller="Product" asp-action="Add" method="post">
+                    <form asp-controller="Product" asp-action="Edit" method="post">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="mb-3">
@@ -42,7 +42,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label asp-for="Cena" class="form-label">Cena</label>
-                                    <input type="number" class="form-control shadow-sm" asp-for="Cena" required min="0.01", step="0.01"/>
+                                    <input type="number" class="form-control shadow-sm" asp-for="Cena" required min="0.01" , step="0.01" />
                                 </div>
                                 <div class="mb-3">
                                     <label asp-for="CzasPrzygotowania" class="form-label">Czas przygotowania</label>
@@ -59,7 +59,7 @@
                             </div>
                         </div>
                         <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-success btn-lg shadow-sm">Dodaj produkt</button>
+                            <button type="submit" class="btn btn-success btn-lg shadow-sm">Edytuj produkt</button>
                         </div>
                     </form>
                 </div>
