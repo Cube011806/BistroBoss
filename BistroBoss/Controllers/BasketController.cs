@@ -22,11 +22,12 @@ namespace BistroBoss.Controllers
         {
             var userId = _userManager.GetUserId(User);
             var uzytkownik = _dbContext.Uzytkownicy.Find(userId);
-            if (uzytkownik.Koszyk == null) {
-                uzytkownik.Koszyk = new Koszyk();
-            }
-            var koszyk = _dbContext.Koszyki.FirstOrDefault(k => k.UzytkownikId == userId);
-            return View(koszyk);
+            //if (uzytkownik.Koszyk == null) {
+            //uzytkownik.Koszyk = new Koszyk();
+            //}
+            //var koszyk = _dbContext.Koszyki.FirstOrDefault(k => k.UzytkownikId == userId);
+            //return View(koszyk);
+            return View();
         }
         public IActionResult AddToBasket()
         {

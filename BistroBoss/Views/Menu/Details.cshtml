@@ -1,17 +1,31 @@
 ﻿@model BistroBoss.Models.Produkt
 
 @{
-    ViewData["Title"] = "Szczegóły dania";
-    <div>
-        <div class="card mb-2">
-            <div class="card-body">
-                <h5 class="card-title">@Model.Nazwa</h5>
-                <p class="card-text">@Model.Opis</p>
-                <p class="card-text">Cena: @Model.Cena.ToString("C")</p>
-                <p class="card-text">Czas przygotowania: @Model.CzasPrzygotowania</p>
-                <p class="card-text">Kategoria: @Model.Kategoria.Nazwa</p>
-            </div>
+    ViewData["Title"] = "Szczegóły produktu";
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+        <strong>@TempData["ErrorMessage"]</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+        <strong>@TempData["SuccessMessage"]</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+<div>
+    <div class="card mb-2">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Nazwa</h5>
+            <p class="card-text">@Model.Opis</p>
+            <p class="card-text">Cena: @Model.Cena.ToString("C")</p>
+            <p class="card-text">Czas przygotowania: @Model.CzasPrzygotowania minut</p>
+            <p class="card-text">Kategoria: @Model.Kategoria.Nazwa</p>
         </div>
     </div>
+</div>
 
-}
