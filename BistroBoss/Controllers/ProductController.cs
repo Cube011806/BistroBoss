@@ -188,5 +188,29 @@ namespace BistroBoss.Controllers
             }));
             ViewBag.ListaKategorii = listaKategorii;
         }
+
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            var produkt = _dbContext.Produkty.FirstOrDefault(p => p.Id == id);
+            if(produkt != null)
+            {
+                return View(produkt);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Nie odnaleziono podanego produktu w menu!";
+                return RedirectToAction("Index", "Menu");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Delete(Produkt produkt)
+        {
+            _dbContext.Remove(produkt);
+            _dbContext.SaveChanges();
+            TempData["SuccessMessage"] = "Pomyślnie usunięto produkt z menu!";
+            return RedirectToAction("Index", "Menu");
+        }
     }
 }

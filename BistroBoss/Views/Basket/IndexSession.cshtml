@@ -4,35 +4,55 @@
     ViewData["Title"] = "Twój Koszyk (Gość)";
 }
 
-<h1>Twój Koszyk</h1>
+<style>
+    .mb-0
+    {
+        color: white;
+    }
+</style>
 
-@if (!Model.Produkty.Any())
-{
-    <p>Koszyk jest pusty.</p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Produkt</th>
-                <th>Ilość</th>
-                <th>Akcje</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Produkty)
-            {
-                <tr>
-                    <td>@item.Nazwa</td>
-                    <td>@item.Ilosc</td>
-                    <td>
-                        <form asp-action="RemoveFromSessionBasket" asp-route-id="@item.ProduktId" method="post">
-                            <button class="btn btn-danger btn-sm">Usuń</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+<div class="container py-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-md-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="mb-0">Twój Koszyk (Gość)</h3>
+                </div>
+                <div class="card-body bg-white text-dark">
+
+                    @if (!Model.Produkty.Any())
+                    {
+                        <p class="text-center">Koszyk jest pusty.</p>
+                    }
+                    else
+                    {
+                        <table class="table table-bordered align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Produkt</th>
+                                    <th>Ilość</th>
+                                    <th>Akcje</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Produkty)
+                                {
+                                    <tr>
+                                        <td>@item.Nazwa</td>
+                                        <td>@item.Ilosc</td>
+                                        <td>
+                                            <form asp-action="RemoveFromSessionBasket" asp-route-id="@item.ProduktId" method="post">
+                                                <button class="btn btn-danger btn-sm">Usuń</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

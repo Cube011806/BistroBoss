@@ -7,10 +7,69 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BistroBoss.styles.css" asp-append-version="true" />
+
+    <style>
+        body {
+            background-color: #2c2c2c;
+            color: white;
+        }
+
+        .navbar {
+            background-color: #b30000 !important;
+        }
+
+        .navbar .nav-link,
+        .navbar .navbar-brand {
+            color: white !important;
+        }
+
+        .footer {
+            background-color: #1f1f1f;
+            border-top: none;
+            color: white;
+        }
+
+        .card {
+            background-color: #f8f9fa;
+            color: #212529;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        h1, h3, .card-title {
+            color: #ffc107;
+        }
+
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .btn-success {
+            background-color: #198754;
+            border-color: #198754;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: black;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-0 shadow-none mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BistroBoss</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -43,7 +102,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="footer text-white mt-auto py-3">
         <div class="container">
             &copy; 2025 - BistroBoss - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
