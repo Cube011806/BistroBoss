@@ -57,6 +57,11 @@
                         <div class="text-end mt-3">
                             <h5><strong>Łączna cena: @Model.KoszykProdukty.Sum(p => p.Produkt.Cena * p.Ilosc).ToString("c")</strong></h5>
                         </div>
+                        <div class="text-end mt-3">
+                            <a asp-controller="Checkout" asp-action="Index" class="btn btn-success">
+                                Złóż zamówienie
+                            </a>
+                        </div>
                     }
 
                 </div>
