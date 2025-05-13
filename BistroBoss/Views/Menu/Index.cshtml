@@ -27,6 +27,14 @@
         @foreach(var produkt in kategoria.Produkty){
             <div class="card mb-2">
                 <div class="card-body">
+                    @if (!string.IsNullOrEmpty(produkt.Zdjecie))
+                    {
+                        <img src="@produkt.Zdjecie" alt="Zdjęcie @produkt.Nazwa" style="max-height: 180px; " class="img-thumbnail" />
+                    }
+                    else
+                    {
+                        <span class="text-muted">Brak zdjęcia</span>
+                    }
                     <h5 class="card-title">@produkt.Nazwa</h5>
                     <p class="card-text">@produkt.Opis</p>
                     <p class="card-text">Cena: @produkt.Cena.ToString("C")</p>

@@ -26,9 +26,9 @@ namespace BistroBoss.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(Produkt produkt, string? nowaKategoria)
+        public async Task<IActionResult> Add(Produkt produkt, string? nowaKategoria, IFormFile? zdjeciePlik)
         {
-            if (produkt.Nazwa.IsNullOrEmpty() || produkt.Opis.IsNullOrEmpty())
+            if (string.IsNullOrWhiteSpace(produkt.Nazwa) || string.IsNullOrWhiteSpace(produkt.Opis))
             {
                 TempData["ErrorMessage"] = "Nazwa oraz opis produktu nie mogą być puste!";
                 UstawListeKategorii();
@@ -36,7 +36,7 @@ namespace BistroBoss.Controllers
             }
             if (produkt.Cena <= 0)
             {
-                TempData["ErrorMessage"] = "Cena produktu nie może być równa bądz mniejsza niż 0!";
+                TempData["ErrorMessage"] = "Cena produktu nie może być równa bądź mniejsza niż 0!";
                 UstawListeKategorii();
                 return View();
             }
@@ -46,48 +46,71 @@ namespace BistroBoss.Controllers
                 UstawListeKategorii();
                 return View();
             }
-            //Jeżeli nowa kategoria wpisana w formularzu nie jest pusta i nie jest białym znakiem to idziemy dalej
+
+            // Obsługa dodawania zdjęcia
+            if (zdjeciePlik != null && zdjeciePlik.Length > 0)
+            {
+                var folderPath = Path.Combine("wwwroot", "images", "produkty");
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(zdjeciePlik.FileName);
+                var filePath = Path.Combine(folderPath, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await zdjeciePlik.CopyToAsync(stream);
+                }
+
+                produkt.Zdjecie = "/images/produkty/" + uniqueFileName;
+            }
+
+            // Dodanie nowej kategorii
             if (!string.IsNullOrWhiteSpace(nowaKategoria))
             {
-                //Jeżeli równocześnie kategoria z listy również została wybrana, to użytkownik wybrał
-                //dwie kategorie dla produktu co jest niepoprawne.
                 if (produkt.KategoriaId != 0)
                 {
                     TempData["ErrorMessage"] = "Nie możesz wybrać kategorii z listy oraz podać nowej kategorii jednocześnie!";
                     UstawListeKategorii();
                     return View();
                 }
-                //Jeżeli kategoria wpisana jako nowa znajduje się już na liście kategorii (czyli w bazie), to
-                //wyrzuca błąd, bo to też jest działaniem niepoprawnym
+
                 if (_dbContext.Kategorie.Any(k => k.Nazwa == nowaKategoria))
                 {
                     TempData["ErrorMessage"] = "Wpisana nazwa kategorii produktu znajduje się już na liście kategorii!";
                     UstawListeKategorii();
                     return View();
                 }
+
                 var nowaKategoriaDoDodania = new Kategoria { Nazwa = nowaKategoria };
                 _dbContext.Kategorie.Add(nowaKategoriaDoDodania);
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
+
                 produkt.KategoriaId = nowaKategoriaDoDodania.Id;
                 _dbContext.Produkty.Add(produkt);
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
+
                 TempData["SuccessMessage"] = "Produkt został pomyślnie dodany!";
                 return RedirectToAction("Index", "Menu");
             }
-            //Jeżeli kategoria wpisana jest pusta bądz jest białym znakiem (poprzedni warunek) oraz kategoria wybrana z listy też jest pusta (jej id to 0)
-            //To znaczy, że użytkownik nie wybrał żadnej kategorii z listy i żadnej również nie wpisał (co nie jest poprawne).
+
             if (produkt.KategoriaId == 0)
             {
-                TempData["ErrorMessage"] = "Musisz wybrać kategorie z listy, bądz dodać całkiem nową kategorie produktu!";
+                TempData["ErrorMessage"] = "Musisz wybrać kategorię z listy bądź dodać nową kategorię produktu!";
                 UstawListeKategorii();
                 return View();
             }
-            //Dalej jest sytuacja w której użytkownik wybrał kategorię produktu z listy bez wpisania żadnej nowej w polu formularza
+
+            // Kategoria z listy
             _dbContext.Produkty.Add(produkt);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
+
             TempData["SuccessMessage"] = "Produkt został pomyślnie dodany!";
             return RedirectToAction("Index", "Menu");
         }
+
 
         [HttpGet]
         public IActionResult Edit(int id)
@@ -106,68 +129,85 @@ namespace BistroBoss.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Produkt produkt, string? nowaKategoria)
+        public IActionResult Edit(Produkt produkt, string? nowaKategoria, IFormFile? zdjeciePlik)
         {
             if (produkt.Nazwa.IsNullOrEmpty() || produkt.Opis.IsNullOrEmpty())
             {
                 TempData["ErrorMessage"] = "Nazwa oraz opis produktu nie mogą być puste!";
                 UstawListeKategorii();
-                return View();
+                return View(produkt);
             }
+
             if (produkt.Cena <= 0)
             {
                 TempData["ErrorMessage"] = "Cena produktu nie może być równa bądz mniejsza niż 0!";
                 UstawListeKategorii();
-                return View();
+                return View(produkt);
             }
+
             if (produkt.CzasPrzygotowania < 0)
             {
                 TempData["ErrorMessage"] = "Czas przygotowania produktu nie może być mniejszy niż 0!";
                 UstawListeKategorii();
-                return View();
+                return View(produkt);
             }
-            //Jeżeli nowa kategoria wpisana w formularzu nie jest pusta i nie jest białym znakiem to idziemy dalej
+
+            // Obsługa nowej kategorii
             if (!string.IsNullOrWhiteSpace(nowaKategoria))
             {
-                //Jeżeli równocześnie kategoria z listy również została wybrana, to użytkownik wybrał
-                //dwie kategorie dla produktu co jest niepoprawne.
                 if (produkt.KategoriaId != 0)
                 {
                     TempData["ErrorMessage"] = "Nie możesz wybrać kategorii z listy oraz podać nowej kategorii jednocześnie!";
                     UstawListeKategorii();
-                    return View();
+                    return View(produkt);
                 }
-                //Jeżeli kategoria wpisana jako nowa znajduje się już na liście kategorii (czyli w bazie), to
-                //wyrzuca błąd, bo to też jest działaniem niepoprawnym
+
                 if (_dbContext.Kategorie.Any(k => k.Nazwa == nowaKategoria))
                 {
                     TempData["ErrorMessage"] = "Wpisana nazwa kategorii produktu znajduje się już na liście kategorii!";
                     UstawListeKategorii();
-                    return View();
+                    return View(produkt);
                 }
+
                 var nowaKategoriaDoDodania = new Kategoria { Nazwa = nowaKategoria };
                 _dbContext.Kategorie.Add(nowaKategoriaDoDodania);
                 _dbContext.SaveChanges();
                 produkt.KategoriaId = nowaKategoriaDoDodania.Id;
-                _dbContext.Produkty.Update(produkt);
-                _dbContext.SaveChanges();
-                TempData["SuccessMessage"] = "Produkt został pomyślnie edytowany!";
-                return RedirectToAction("Index", "Menu");
             }
-            //Jeżeli kategoria wpisana jest pusta bądz jest białym znakiem (poprzedni warunek) oraz kategoria wybrana z listy też jest pusta (jej id to 0)
-            //To znaczy, że użytkownik nie wybrał żadnej kategorii z listy i żadnej również nie wpisał (co nie jest poprawne).
+
             if (produkt.KategoriaId == 0)
             {
-                TempData["ErrorMessage"] = "Musisz wybrać kategorie z listy, bądz dodać całkiem nową kategorie produktu!";
+                TempData["ErrorMessage"] = "Musisz wybrać kategorię z listy, bądź dodać nową!";
                 UstawListeKategorii();
-                return View();
+                return View(produkt);
             }
-            //Dalej jest sytuacja w której użytkownik wybrał kategorię produktu z listy bez wpisania żadnej nowej w polu formularza
+
+            // 🖼️ Obsługa zdjęcia
+            if (zdjeciePlik != null && zdjeciePlik.Length > 0)
+            {
+                var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/produkty");
+                if (!Directory.Exists(folder))
+                    Directory.CreateDirectory(folder);
+
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(zdjeciePlik.FileName);
+                var filePath = Path.Combine(folder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    zdjeciePlik.CopyTo(stream);
+                }
+
+                // Zaktualizuj ścieżkę zdjęcia (np. /images/produkty/nazwa.jpg)
+                produkt.Zdjecie = "/images/produkty/" + fileName;
+            }
+
             _dbContext.Produkty.Update(produkt);
             _dbContext.SaveChanges();
+
             TempData["SuccessMessage"] = "Produkt został pomyślnie edytowany!";
             return RedirectToAction("Index", "Menu");
         }
+
 
         private void UstawListeKategorii()
         {
