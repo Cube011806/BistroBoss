@@ -10,7 +10,7 @@ namespace BistroBoss.Models
         public DateTime? DataUrodzenia { get; set; }
         public virtual ICollection<Opinia> Opinie { get; set; } = new List<Opinia>();
         public virtual ICollection<Zamowienie> Zamowienia { get; set; } = new List<Zamowienie>();
-        public virtual Koszyk Koszyk { get; set; } = new Koszyk();
+        public virtual Koszyk? Koszyk { get; set; } = new Koszyk();
         public virtual int KoszykId { get; set; }
     }
 }

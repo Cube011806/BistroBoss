@@ -78,7 +78,9 @@ namespace BistroBoss.Controllers
                 }
                 else
                 {
-                    koszyk.KoszykProdukty.Add(new KoszykProdukt { ProduktId = produktId, Ilosc = 1 });
+                    var kp = new KoszykProdukt { ProduktId = produktId, Ilosc = 1 };
+                    _dbContext.KoszykProdukty.Add(kp);
+                    koszyk.KoszykProdukty.Add(kp);
                 }
 
                 _dbContext.SaveChanges();

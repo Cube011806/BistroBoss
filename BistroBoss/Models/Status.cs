@@ -9,6 +9,6 @@ namespace BistroBoss.Models
         public int Id { get; set; }
         [MaxLength(15)]
         public string Nazwa { get; set; } = string.Empty;
-        public virtual ICollection<Zamowienie> Zamowienia { get; set; } = new List<Zamowienie>();
+        //public virtual ICollection<Zamowienie> Zamowienia { get; set; } = new List<Zamowienie>();
     }
 }

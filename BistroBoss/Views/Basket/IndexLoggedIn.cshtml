@@ -43,7 +43,7 @@
                                         <td>@item.Produkt.Nazwa</td>
                                         <td>@item.Ilosc</td>
                                         <td>@item.Produkt.Cena.ToString("c")</td>
-                                        <td>@(item.Produkt.Cena * item.Ilosc).ToString("c")</td>
+                                        <td>@(item.Produkt.Cena * item.Ilosc) zł</td>
                                         <td>
                                             <form asp-action="RemoveFromBasket" asp-route-id="@item.Id" method="post">
                                                 <button class="btn btn-danger btn-sm">Usuń</button>

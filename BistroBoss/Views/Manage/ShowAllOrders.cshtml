@@ -1,0 +1,12 @@
+﻿@model ICollection<Zamowienie>
+<table style="border: solid white 2px;">
+    @foreach(var zamowienie in Model)
+    {
+        <tr>
+            <td>@zamowienie.Id</td>
+            <td><a asp-action="ShowOrder" asp-route-id="@zamowienie.Id" class="btn btn-danger">Szczegóły</a></td>
+            <td><a asp-action="DeleteOrder" class="btn btn-danger">Usuń</a></td>
+        </tr>
+    }
+    
+</table>

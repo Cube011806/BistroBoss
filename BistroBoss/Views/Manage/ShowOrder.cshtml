@@ -1,0 +1,17 @@
+﻿@model Zamowienie
+
+<div>
+    <p>@Model.DataZamowienia</p>
+    <p>@Model.Ulica</p>
+    <p>@Model.NumerBudynku</p>
+    <p>@Model.KodPocztowy</p>
+    <p>@Model.Miejscowosc</p>
+    @foreach(var produkt in Model.ZamowioneProdukty)
+    {
+        @produkt.Produkt.Nazwa;
+        @produkt.Produkt.Cena;
+        <p>@produkt.Ilosc</p>
+    }
+    <p>>Status: @Model.Status</p>
+    <a asp-action="SetInPreparation" class="btn btn-success">Ustaw status jako w realizacji</a>
+</div>
