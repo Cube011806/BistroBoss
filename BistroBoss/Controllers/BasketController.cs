@@ -9,9 +9,10 @@ using System.Text.Json;
 
 namespace BistroBoss.Controllers
 {
-    using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using System.Security.Claims;
     using System.Text.Json;
 
     public class BasketController : Controller
@@ -109,7 +110,35 @@ namespace BistroBoss.Controllers
                 return RedirectToAction("Index");
             }
         }
+        public IActionResult ShowMyOrders()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var zamowienia = _dbContext.Zamowienia;
+            var mojeZamowienia = zamowienia.Where(z => z.UzytkownikId == userId).ToList();
+            return View(mojeZamowienia);
+        }
+        public IActionResult ShowOrder(int id)
+        {
+            var zamowienie = _dbContext.Zamowienia
+            .Include(z => z.ZamowioneProdukty)
+                .ThenInclude(zp => zp.Produkt)
+                    .ThenInclude(p => p.Kategoria)
+            .Include(z => z.Opinia)
+            .FirstOrDefault(z => z.Id == id);
 
+            return View(zamowienie);
+        }
+        public IActionResult CancelOrder(int id)
+        {
+            var zamowienie = _dbContext.Zamowienia.FirstOrDefault(z => z.Id == id);
+            if (zamowienie == null)
+            {
+                return NotFound();
+            }
+            zamowienie.Status = 0;
+            _dbContext.SaveChanges();
+            return RedirectToAction("ShowOrder", "Basket", new { id });
+        }
         private KoszykSessionDto GetSessionKoszyk()
         {
             var json = HttpContext.Session.GetString(SessionKeyKoszyk);

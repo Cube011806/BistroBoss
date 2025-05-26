@@ -29,10 +29,66 @@ namespace BistroBoss.Controllers
         {
             var zamowienie = _dbContext.Zamowienia
             .Include(z => z.ZamowioneProdukty)
-            .ThenInclude(zp => zp.Produkt)
+                .ThenInclude(zp => zp.Produkt)
+                    .ThenInclude(p => p.Kategoria)
+            .Include(z => z.Opinia)
             .FirstOrDefault(z => z.Id == id);
 
             return View(zamowienie);
+        }
+        public IActionResult SetCancelled(int id)
+        {
+            var zamowienie = _dbContext.Zamowienia.FirstOrDefault(z => z.Id == id);
+            if (zamowienie == null)
+            {
+                return NotFound();
+            }
+            zamowienie.Status = 0;
+            _dbContext.SaveChanges();
+            return RedirectToAction("ShowOrder", "Manage", new { id });
+        }
+        public IActionResult SetInPreparation(int id)
+        {
+            var zamowienie = _dbContext.Zamowienia.FirstOrDefault(z => z.Id == id);
+            if (zamowienie == null)
+            {
+                return NotFound();
+            }
+            zamowienie.Status = 2;
+            _dbContext.SaveChanges();
+            return RedirectToAction("ShowOrder", "Manage", new { id });
+        }
+        public IActionResult SetInDelivery(int id)
+        {
+            var zamowienie = _dbContext.Zamowienia.FirstOrDefault(z => z.Id == id);
+            if (zamowienie == null)
+            {
+                return NotFound();
+            }
+            zamowienie.Status = 3;
+            _dbContext.SaveChanges();
+            return RedirectToAction("ShowOrder", "Manage", new { id });
+        }
+        public IActionResult SetCompleted(int id)
+        {
+            var zamowienie = _dbContext.Zamowienia.FirstOrDefault(z => z.Id == id);
+            if (zamowienie == null)
+            {
+                return NotFound();
+            }
+            zamowienie.Status = 4;
+            _dbContext.SaveChanges();
+            return RedirectToAction("ShowOrder", "Manage", new { id });
+        }
+        public IActionResult DeleteOrder(int id)
+        {
+            var zamowienie = _dbContext.Zamowienia.Find(id);
+            if(zamowienie != null)
+            {
+                _dbContext.Zamowienia.Remove(zamowienie);
+                _dbContext.SaveChanges();
+            }
+            return RedirectToAction("ShowAllOrders");
         }
     }
 }

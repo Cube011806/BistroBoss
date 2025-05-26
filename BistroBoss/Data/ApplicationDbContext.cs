@@ -10,7 +10,7 @@ namespace BistroBoss.Data
         public virtual DbSet<Uzytkownik> Uzytkownicy { get; set; }
         public virtual DbSet<Zamowienie> Zamowienia { get; set; }
         public virtual DbSet<ZamowienieProdukt> ZamowieniaProdukty { get; set; }
-        public virtual DbSet<Status> Statusy { get; set; }
+        //public virtual DbSet<Status> Statusy { get; set; }
         public virtual DbSet<Kategoria> Kategorie { get; set; }
         public virtual DbSet<Dostawa> Dostawy { get; set; }
         public virtual DbSet<Opinia> Opinie { get; set; }
@@ -47,9 +47,9 @@ namespace BistroBoss.Data
             //    .WithOne()
             //    .HasForeignKey<Zamowienie>(z => z.KoszykId);
             
-            modelBuilder.Entity<Status>()
-                .HasIndex(s => s.Nazwa)
-                .IsUnique();
+            //modelBuilder.Entity<Status>()
+            //    .HasIndex(s => s.Nazwa)
+            //    .IsUnique();
 
             modelBuilder.Entity<Kategoria>()
                 .HasIndex(k => k.Nazwa)

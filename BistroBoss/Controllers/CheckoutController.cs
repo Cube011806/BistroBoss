@@ -26,18 +26,20 @@ namespace BistroBoss.Controllers
         public IActionResult SubmitOrder(Zamowienie zamowienie, Uzytkownik uzytkownik, bool deliveryMethod)
         {
             var koszyk = _context.Koszyki.Include(k=>k.KoszykProdukty).FirstOrDefault(k => k.UzytkownikId == _userManager.GetUserId(User));
+            float cenaCalkowita = 0;
             foreach(var item in koszyk.KoszykProdukty)
             {
                 var produkt = _context.Produkty.FirstOrDefault(p => p.Id == item.ProduktId);
                 if (produkt != null)
                 {
+                    
                     var zamowienieprodukt = new ZamowienieProdukt
                     {
                         ProduktId = produkt.Id,
                         Ilosc = item.Ilosc,
                         Cena = produkt.Cena
+                        
                     };
-
                     _context.ZamowieniaProdukty.Add(zamowienieprodukt);
                     zamowienie.ZamowioneProdukty.Add(zamowienieprodukt);
                 }
@@ -51,10 +53,6 @@ namespace BistroBoss.Controllers
                 zamowienie.KodPocztowy = "";
             }
 
-            // Pobieramy identyfikator koszyka użytkownika
-            //zamowienie.KoszykId = GetUserKoszykId();
-
-            // Obsługa użytkownika - jeśli zalogowany, przypisujemy jego ID, jeśli nie, tworzymy nowego użytkownika
             if (User.Identity.IsAuthenticated)
             {
                 zamowienie.UzytkownikId = _userManager.GetUserId(User);
@@ -74,14 +72,27 @@ namespace BistroBoss.Controllers
                 _context.SaveChanges();
                 zamowienie.UzytkownikId = guest.Id;
             }
-            //Dopisz czyszczenie koszyka
+            zamowienie.Status = 1;
+            foreach(var produkt in koszyk.KoszykProdukty)
+            {
+                _context.KoszykProdukty.Remove(produkt);
+            }
+            var czasMax = 0;
+            foreach (var produkt in zamowienie.ZamowioneProdukty)
+            {
+                cenaCalkowita += produkt.Cena * produkt.Ilosc;
+                if(czasMax < produkt.Produkt.CzasPrzygotowania)
+                {
+                    czasMax = produkt.Produkt.CzasPrzygotowania;
+                }
+            }
+            zamowienie.PrzewidywanyCzasRealizacji = czasMax;
+            zamowienie.CenaCalkowita = cenaCalkowita;
             _context.Zamowienia.Add(zamowienie);
             _context.SaveChanges();
 
             return RedirectToAction("OrderConfirmation", new { id = zamowienie.Id });
         }
-
-
 
         private int GetUserKoszykId()
         {

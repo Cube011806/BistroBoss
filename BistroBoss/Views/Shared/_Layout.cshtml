@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<Uzytkownik> UserManager
+@{
+    var id = UserManager.GetUserId(User);
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -84,11 +89,17 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Menu" asp-action="Index">Menu</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Manage" asp-action="Index">Zarządzanie</a>
-                            </li>
+                            @if (User.Identity.IsAuthenticated && UserManager.FindByIdAsync(id).Result.AccessLevel == 1)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Manage" asp-action="Index">Zarządzanie</a>
+                                </li>
+                            }
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Basket" asp-action="Index">Koszyk</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Basket" asp-action="ShowMyOrders">Moje zamówienia</a>
                             </li>
                         </ul>
                         <partial name="_LoginPartial" />
@@ -114,3 +125,4 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+

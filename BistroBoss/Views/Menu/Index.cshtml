@@ -1,5 +1,9 @@
-﻿@model ICollection<Kategoria>
-
+﻿@using Microsoft.AspNetCore.Identity
+@model ICollection<Kategoria>
+@inject UserManager<Uzytkownik> UserManager
+@{
+    var id = UserManager.GetUserId(User);
+}
 @{
     ViewData["Title"] = "Menu";
 }
@@ -49,8 +53,11 @@
 
                         <a asp-action="Details" asp-route-id="@produkt.Id" class="btn btn-primary">Szczegóły</a>
                         <a asp-action="AddToBasket" asp-controller="Basket" asp-route-produktId="@produkt.Id" class="btn btn-primary">Dodaj do koszyka</a>
-                        <a asp-action="Edit" asp-controller="Product" asp-route-id="@produkt.Id" class="btn btn-warning">Edytuj produkt</a>
-                        <a asp-action="Delete" asp-controller="Product" asp-route-id="@produkt.Id" class="btn btn-danger">Usuń produkt</a>
+                        @if (User.Identity.IsAuthenticated && UserManager.FindByIdAsync(id).Result.AccessLevel == 1)
+                        {
+                            <a asp-action="Edit" asp-controller="Product" asp-route-id="@produkt.Id" class="btn btn-warning">Edytuj produkt</a>
+                            <a asp-action="Delete" asp-controller="Product" asp-route-id="@produkt.Id" class="btn btn-danger">Usuń produkt</a>
+                        }
                     </div>
                 </div>
             }
