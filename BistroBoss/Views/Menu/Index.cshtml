@@ -8,6 +8,95 @@
     ViewData["Title"] = "Menu";
 }
 
+<style>
+    .card {
+        background-color: #5a5a5a;
+        color: #f1f1f1;
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        padding: 1rem;
+        margin-bottom: 1rem;
+        /* Center card contents horizontally */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card-content {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+        max-width: 800px; /* Limit max width */
+        width: 100%;
+        justify-content: center; /* Center horizontally */
+    }
+
+    .card:hover {
+        transform: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .card img.img-thumbnail {
+        background-color: transparent;
+        border: 1px solid #666;
+        width: 250px;
+        max-height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+        flex-shrink: 0;
+    }
+
+    .text-muted {
+        color: #f1f1f1 !important;
+        font-style: italic;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 250px;
+        max-height: 180px;
+        border: 1px solid #666;
+        border-radius: 8px;
+        flex-shrink: 0;
+        text-align: center;
+        padding: 0.5rem;
+    }
+
+    .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        max-width: 450px;
+    }
+
+    .card-title {
+        color: #ffc107;
+        font-weight: bold;
+        font-size: 1.5rem;
+        margin: 0 0 0.2rem 0;
+    }
+
+    .product-info p {
+        margin: 0.2rem 0;
+        font-size: 1rem;
+    }
+
+    .btn-group {
+        display: flex;
+        justify-content: center; /* Center buttons */
+        gap: 0.75rem;
+        margin-top: 0.75rem;
+        /* Make buttons take only their needed width */
+        width: auto;
+    }
+
+        .btn-group a {
+            flex: none; /* Prevent stretching */
+            white-space: nowrap;
+        }
+</style>
+
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
@@ -28,7 +117,7 @@
     {
         if (kategoria.Produkty != null && kategoria.Produkty.Count > 0)
         {
-            <h1>@kategoria.Nazwa</h1>
+            <h1 class="text-center fw-bold mb-4">@kategoria.Nazwa</h1>
 
             var produktyList = kategoria.Produkty.ToList();
             for (int i = 0; i < produktyList.Count; i++)
@@ -36,27 +125,34 @@
                 var produkt = produktyList[i];
                 bool isLast = i == produktyList.Count - 1;
 
-                <div class="card mb-2 @(isLast ? "mb-1" : "")">
-                    <div class="card-body">
+                <div class="card mb-4 @(isLast ? "mb-1" : "")">
+                    <div class="card-content">
                         @if (!string.IsNullOrEmpty(produkt.Zdjecie))
                         {
-                            <img src="@produkt.Zdjecie" alt="Zdjęcie @produkt.Nazwa" style="max-height: 180px;" class="img-thumbnail" />
+                            <img src="@produkt.Zdjecie" alt="Zdjęcie @produkt.Nazwa" class="img-thumbnail" />
                         }
                         else
                         {
                             <span class="text-muted">Brak zdjęcia</span>
                         }
 
-                        <h5 class="card-title">@produkt.Nazwa</h5>
-                        <p class="card-text">@produkt.Opis</p>
-                        <p class="card-text">Cena: @produkt.Cena.ToString("C")</p>
+                        <div class="card-body">
+                            <h5 class="card-title">@produkt.Nazwa</h5>
+                            <div class="product-info">
+                                <p>Cena: <strong>@produkt.Cena.ToString("C")</strong></p>
+                                <p>Przewidywany czas przygotowania: <strong>@produkt.CzasPrzygotowania minut </strong></p>
+                            </div>
+                        </div>
+                    </div>
 
-                        <a asp-action="Details" asp-route-id="@produkt.Id" class="btn btn-primary">Szczegóły</a>
-                        <a asp-action="AddToBasket" asp-controller="Basket" asp-route-produktId="@produkt.Id" class="btn btn-primary">Dodaj do koszyka</a>
+                    <div class="btn-group">
+                        <a asp-action="Details" asp-route-id="@produkt.Id" class="btn btn-primary btn-sm">Szczegóły produktu</a>
+                        <a asp-action="AddToBasket" asp-controller="Basket" asp-route-produktId="@produkt.Id" class="btn btn-primary btn-sm">Dodaj do koszyka</a>
+
                         @if (User.Identity.IsAuthenticated && UserManager.FindByIdAsync(id).Result.AccessLevel == 1)
                         {
-                            <a asp-action="Edit" asp-controller="Product" asp-route-id="@produkt.Id" class="btn btn-warning">Edytuj produkt</a>
-                            <a asp-action="Delete" asp-controller="Product" asp-route-id="@produkt.Id" class="btn btn-danger">Usuń produkt</a>
+                            <a asp-action="Edit" asp-controller="Product" asp-route-id="@produkt.Id" class="btn btn-warning btn-sm">Edytuj produkt</a>
+                            <a asp-action="Delete" asp-controller="Product" asp-route-id="@produkt.Id" class="btn btn-danger btn-sm">Usuń produkt</a>
                         }
                     </div>
                 </div>
