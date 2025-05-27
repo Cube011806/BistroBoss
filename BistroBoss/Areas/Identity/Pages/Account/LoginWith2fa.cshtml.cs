@@ -12,19 +12,21 @@ using Microsoft.Extensions.Logging;
 using BistroBoss.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using BistroBoss.Data;
 
 namespace BistroBoss.Areas.Identity.Pages.Account
 {
-    public class LoginWith2faModel : PageModel
+    public class LoginWith2faModel : BasePageModel
     {
         private readonly SignInManager<Uzytkownik> _signInManager;
         private readonly UserManager<Uzytkownik> _userManager;
         private readonly ILogger<LoginWith2faModel> _logger;
 
         public LoginWith2faModel(
+            ApplicationDbContext dbContext,
             SignInManager<Uzytkownik> signInManager,
             UserManager<Uzytkownik> userManager,
-            ILogger<LoginWith2faModel> logger)
+            ILogger<LoginWith2faModel> logger) : base(dbContext)
         {
             _signInManager = signInManager;
             _userManager = userManager;

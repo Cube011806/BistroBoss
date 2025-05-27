@@ -7,94 +7,95 @@
 @{
     ViewData["Title"] = "Menu";
 }
+@{
+    bool isMenuEmpty = !Model.Any(k => k.Produkty != null && k.Produkty.Count > 0);
+}
 
 <style>
     .card {
-        background-color: #5a5a5a;
-        color: #f1f1f1;
-        border: none;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        padding: 1rem;
-        margin-bottom: 1rem;
-        /* Center card contents horizontally */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+    background-color: #5a5a5a;
+    color: #f1f1f1;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     }
 
     .card-content {
-        display: flex;
-        gap: 1rem;
-        align-items: flex-start;
-        max-width: 800px; /* Limit max width */
-        width: 100%;
-        justify-content: center; /* Center horizontally */
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    max-width: 800px;
+    width: 100%;
+    justify-content: center;
     }
 
     .card:hover {
-        transform: none;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     .card img.img-thumbnail {
-        background-color: transparent;
-        border: 1px solid #666;
-        width: 250px;
-        max-height: 180px;
-        object-fit: cover;
-        border-radius: 8px;
-        flex-shrink: 0;
+    background-color: transparent;
+    border: 1px solid #666;
+    width: 250px;
+    max-height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
     }
 
     .text-muted {
-        color: #f1f1f1 !important;
-        font-style: italic;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 250px;
-        max-height: 180px;
-        border: 1px solid #666;
-        border-radius: 8px;
-        flex-shrink: 0;
-        text-align: center;
-        padding: 0.5rem;
+    color: #f1f1f1 !important;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 250px;
+    max-height: 180px;
+    border: 1px solid #666;
+    border-radius: 8px;
+    flex-shrink: 0;
+    text-align: center;
+    padding: 0.5rem;
     }
 
     .card-body {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 0.4rem;
-        max-width: 450px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    max-width: 450px;
     }
 
     .card-title {
-        color: #ffc107;
-        font-weight: bold;
-        font-size: 1.5rem;
-        margin: 0 0 0.2rem 0;
+    color: #ffc107;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin: 0 0 0.2rem 0;
     }
 
     .product-info p {
-        margin: 0.2rem 0;
-        font-size: 1rem;
+    margin: 0.2rem 0;
+    font-size: 1rem;
     }
 
     .btn-group {
-        display: flex;
-        justify-content: center; /* Center buttons */
-        gap: 0.75rem;
-        margin-top: 0.75rem;
-        /* Make buttons take only their needed width */
-        width: auto;
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+    width: auto;
     }
 
-        .btn-group a {
-            flex: none; /* Prevent stretching */
-            white-space: nowrap;
-        }
+    .btn-group a {
+    flex: none;
+    white-space: nowrap;
+    }
 </style>
 
 @if (TempData["ErrorMessage"] != null)
@@ -112,7 +113,13 @@
     </div>
 }
 
-<div class="pb-5">
+@if (isMenuEmpty)
+{
+    <h1 class="text-center mt-2">Brak produktów w menu!</h1>
+}
+else
+{
+    <div class="pb-5">
     @foreach (var kategoria in Model)
     {
         if (kategoria.Produkty != null && kategoria.Produkty.Count > 0)
@@ -160,3 +167,4 @@
         }
     }
 </div>
+}

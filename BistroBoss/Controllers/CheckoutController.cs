@@ -8,14 +8,12 @@ using System.Linq;
 
 namespace BistroBoss.Controllers
 {
-    public class CheckoutController : Controller
+    public class CheckoutController : BaseController
     {
-        private readonly ApplicationDbContext _context;
         private readonly UserManager<Uzytkownik> _userManager;
 
-        public CheckoutController(ApplicationDbContext context, UserManager<Uzytkownik> userManager)
+        public CheckoutController(ApplicationDbContext dbContext, UserManager<Uzytkownik> userManager) : base(dbContext)
         {
-            _context = context;
             _userManager = userManager;
         }
         public IActionResult Index()
@@ -25,11 +23,11 @@ namespace BistroBoss.Controllers
         [HttpPost]
         public IActionResult SubmitOrder(Zamowienie zamowienie, Uzytkownik uzytkownik, bool deliveryMethod)
         {
-            var koszyk = _context.Koszyki.Include(k=>k.KoszykProdukty).FirstOrDefault(k => k.UzytkownikId == _userManager.GetUserId(User));
+            var koszyk = _dbContext.Koszyki.Include(k=>k.KoszykProdukty).FirstOrDefault(k => k.UzytkownikId == _userManager.GetUserId(User));
             float cenaCalkowita = 0;
             foreach(var item in koszyk.KoszykProdukty)
             {
-                var produkt = _context.Produkty.FirstOrDefault(p => p.Id == item.ProduktId);
+                var produkt = _dbContext.Produkty.FirstOrDefault(p => p.Id == item.ProduktId);
                 if (produkt != null)
                 {
                     
@@ -40,7 +38,7 @@ namespace BistroBoss.Controllers
                         Cena = produkt.Cena
                         
                     };
-                    _context.ZamowieniaProdukty.Add(zamowienieprodukt);
+                    _dbContext.ZamowieniaProdukty.Add(zamowienieprodukt);
                     zamowienie.ZamowioneProdukty.Add(zamowienieprodukt);
                 }
             }
@@ -68,14 +66,14 @@ namespace BistroBoss.Controllers
                     UserName = uzytkownik.Email
                 };
 
-                _context.Users.Add(guest);
-                _context.SaveChanges();
+                _dbContext.Users.Add(guest);
+                _dbContext.SaveChanges();
                 zamowienie.UzytkownikId = guest.Id;
             }
             zamowienie.Status = 1;
             foreach(var produkt in koszyk.KoszykProdukty)
             {
-                _context.KoszykProdukty.Remove(produkt);
+                _dbContext.KoszykProdukty.Remove(produkt);
             }
             var czasMax = 0;
             foreach (var produkt in zamowienie.ZamowioneProdukty)
@@ -88,8 +86,8 @@ namespace BistroBoss.Controllers
             }
             zamowienie.PrzewidywanyCzasRealizacji = czasMax;
             zamowienie.CenaCalkowita = cenaCalkowita;
-            _context.Zamowienia.Add(zamowienie);
-            _context.SaveChanges();
+            _dbContext.Zamowienia.Add(zamowienie);
+            _dbContext.SaveChanges();
 
             return RedirectToAction("OrderConfirmation", new { id = zamowienie.Id });
         }
@@ -98,7 +96,7 @@ namespace BistroBoss.Controllers
         {
             var userId = _userManager.GetUserId(User);
 
-            var koszyk = _context.Koszyki
+            var koszyk = _dbContext.Koszyki
                 .FirstOrDefault(k => k.UzytkownikId == userId && k.ZamowienieId == null);
 
             if (koszyk == null)

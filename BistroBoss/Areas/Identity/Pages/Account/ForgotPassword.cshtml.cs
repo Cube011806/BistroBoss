@@ -14,15 +14,16 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using BistroBoss.Data;
 
 namespace BistroBoss.Areas.Identity.Pages.Account
 {
-    public class ForgotPasswordModel : PageModel
+    public class ForgotPasswordModel : BasePageModel
     {
         private readonly UserManager<Uzytkownik> _userManager;
         private readonly IEmailSender _emailSender;
 
-        public ForgotPasswordModel(UserManager<Uzytkownik> userManager, IEmailSender emailSender)
+        public ForgotPasswordModel(ApplicationDbContext dbContext, UserManager<Uzytkownik> userManager, IEmailSender emailSender) : base(dbContext)
         {
             _userManager = userManager;
             _emailSender = emailSender;

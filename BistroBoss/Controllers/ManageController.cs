@@ -6,14 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BistroBoss.Controllers
 {
-    public class ManageController : Controller
+    public class ManageController : BaseController
     {
-        private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<Uzytkownik> _userManager;
 
-        public ManageController(ApplicationDbContext dbContext, UserManager<Uzytkownik> userManager)
+        public ManageController(ApplicationDbContext dbContext, UserManager<Uzytkownik> userManager) : base(dbContext)
         {
-            _dbContext = dbContext;
             _userManager = userManager;
         }
         public IActionResult Index()

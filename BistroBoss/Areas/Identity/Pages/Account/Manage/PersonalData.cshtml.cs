@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 using System;
 using System.Threading.Tasks;
+using BistroBoss.Data;
 using BistroBoss.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,14 +11,15 @@ using Microsoft.Extensions.Logging;
 
 namespace BistroBoss.Areas.Identity.Pages.Account.Manage
 {
-    public class PersonalDataModel : PageModel
+    public class PersonalDataModel : BasePageModel
     {
         private readonly UserManager<Uzytkownik> _userManager;
         private readonly ILogger<PersonalDataModel> _logger;
 
         public PersonalDataModel(
+            ApplicationDbContext dbContext,
             UserManager<Uzytkownik> userManager,
-            ILogger<PersonalDataModel> logger)
+            ILogger<PersonalDataModel> logger) : base(dbContext)
         {
             _userManager = userManager;
             _logger = logger;

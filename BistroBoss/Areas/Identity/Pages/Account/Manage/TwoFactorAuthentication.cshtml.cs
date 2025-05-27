@@ -4,6 +4,7 @@
 
 using System;
 using System.Threading.Tasks;
+using BistroBoss.Data;
 using BistroBoss.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,14 +13,15 @@ using Microsoft.Extensions.Logging;
 
 namespace BistroBoss.Areas.Identity.Pages.Account.Manage
 {
-    public class TwoFactorAuthenticationModel : PageModel
+    public class TwoFactorAuthenticationModel : BasePageModel
     {
         private readonly UserManager<Uzytkownik> _userManager;
         private readonly SignInManager<Uzytkownik> _signInManager;
         private readonly ILogger<TwoFactorAuthenticationModel> _logger;
 
         public TwoFactorAuthenticationModel(
-            UserManager<Uzytkownik> userManager, SignInManager<Uzytkownik> signInManager, ILogger<TwoFactorAuthenticationModel> logger)
+            ApplicationDbContext dbContext,
+            UserManager<Uzytkownik> userManager, SignInManager<Uzytkownik> signInManager, ILogger<TwoFactorAuthenticationModel> logger) : base(dbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;

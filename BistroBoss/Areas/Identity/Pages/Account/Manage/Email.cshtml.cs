@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using BistroBoss.Data;
 using BistroBoss.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -16,16 +17,17 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace BistroBoss.Areas.Identity.Pages.Account.Manage
 {
-    public class EmailModel : PageModel
+    public class EmailModel : BasePageModel
     {
         private readonly UserManager<Uzytkownik> _userManager;
         private readonly SignInManager<Uzytkownik> _signInManager;
         private readonly IEmailSender _emailSender;
 
         public EmailModel(
+            ApplicationDbContext dbContext,
             UserManager<Uzytkownik> userManager,
             SignInManager<Uzytkownik> signInManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender) : base(dbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;

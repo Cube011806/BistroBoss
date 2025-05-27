@@ -3,18 +3,17 @@ using BistroBoss.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BistroBoss.Controllers
 {
-    public class ProductController : Controller
+    public class ProductController : BaseController
     {
-        private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<Uzytkownik> _userManager;
 
-        public ProductController(ApplicationDbContext dbContext, UserManager<Uzytkownik> userManager)
+        public ProductController(ApplicationDbContext dbContext, UserManager<Uzytkownik> userManager) : base(dbContext)
         {
-            _dbContext = dbContext;
             _userManager = userManager;
         }
 
@@ -232,7 +231,7 @@ namespace BistroBoss.Controllers
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            var produkt = _dbContext.Produkty.FirstOrDefault(p => p.Id == id);
+            var produkt = _dbContext.Produkty.Include(p => p.Kategoria).FirstOrDefault(p => p.Id == id);
             if(produkt != null)
             {
                 return View(produkt);
@@ -247,8 +246,24 @@ namespace BistroBoss.Controllers
         [HttpPost]
         public IActionResult Delete(Produkt produkt)
         {
-            _dbContext.Remove(produkt);
+            var produktZKategoria = _dbContext.Produkty.FirstOrDefault(p => p.Id == produkt.Id);
+            var kategoriaId = produktZKategoria.KategoriaId;
+
+            _dbContext.Remove(produktZKategoria);
             _dbContext.SaveChanges();
+
+            bool czyToOstatniZKategorii = !_dbContext.Produkty.Any(p => p.KategoriaId == kategoriaId);
+
+            if (czyToOstatniZKategorii)
+            {
+                var kategoria = _dbContext.Kategorie.FirstOrDefault(k => k.Id == kategoriaId);
+                if (kategoria != null)
+                {
+                    _dbContext.Kategorie.Remove(kategoria);
+                    _dbContext.SaveChanges();
+                }
+            }
+
             TempData["SuccessMessage"] = "Pomyślnie usunięto produkt z menu!";
             return RedirectToAction("Index", "Menu");
         }

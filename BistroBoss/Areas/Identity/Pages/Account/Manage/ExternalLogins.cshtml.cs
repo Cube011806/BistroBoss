@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BistroBoss.Data;
 using BistroBoss.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -15,16 +16,17 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BistroBoss.Areas.Identity.Pages.Account.Manage
 {
-    public class ExternalLoginsModel : PageModel
+    public class ExternalLoginsModel : BasePageModel
     {
         private readonly UserManager<Uzytkownik> _userManager;
         private readonly SignInManager<Uzytkownik> _signInManager;
         private readonly IUserStore<Uzytkownik> _userStore;
 
         public ExternalLoginsModel(
+            ApplicationDbContext dbContext,
             UserManager<Uzytkownik> userManager,
             SignInManager<Uzytkownik> signInManager,
-            IUserStore<Uzytkownik> userStore)
+            IUserStore<Uzytkownik> userStore) : base(dbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;

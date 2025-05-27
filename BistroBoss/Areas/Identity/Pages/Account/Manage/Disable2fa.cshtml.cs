@@ -4,6 +4,7 @@
 
 using System;
 using System.Threading.Tasks;
+using BistroBoss.Data;
 using BistroBoss.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,14 +13,15 @@ using Microsoft.Extensions.Logging;
 
 namespace BistroBoss.Areas.Identity.Pages.Account.Manage
 {
-    public class Disable2faModel : PageModel
+    public class Disable2faModel : BasePageModel
     {
         private readonly UserManager<Uzytkownik> _userManager;
         private readonly ILogger<Disable2faModel> _logger;
 
         public Disable2faModel(
+            ApplicationDbContext dbContext,
             UserManager<Uzytkownik> userManager,
-            ILogger<Disable2faModel> logger)
+            ILogger<Disable2faModel> logger) : base (dbContext)
         {
             _userManager = userManager;
             _logger = logger;

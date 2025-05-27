@@ -15,15 +15,16 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using BistroBoss.Data;
 
 namespace BistroBoss.Areas.Identity.Pages.Account
 {
-    public class LoginModel : PageModel
+    public class LoginModel : BasePageModel
     {
         private readonly SignInManager<Uzytkownik> _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<Uzytkownik> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(ApplicationDbContext dbContext, SignInManager<Uzytkownik> signInManager, ILogger<LoginModel> logger) : base(dbContext)
         {
             _signInManager = signInManager;
             _logger = logger;

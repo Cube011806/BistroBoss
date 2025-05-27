@@ -19,10 +19,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using BistroBoss.Data;
 
 namespace BistroBoss.Areas.Identity.Pages.Account
 {
-    public class RegisterModel : PageModel
+    public class RegisterModel : BasePageModel
     {
         private readonly SignInManager<Uzytkownik> _signInManager;
         private readonly UserManager<Uzytkownik> _userManager;
@@ -32,11 +33,12 @@ namespace BistroBoss.Areas.Identity.Pages.Account
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
+            ApplicationDbContext dbContext,
             UserManager<Uzytkownik> userManager,
             IUserStore<Uzytkownik> userStore,
             SignInManager<Uzytkownik> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender) : base(dbContext)
         {
             _userManager = userManager;
             _userStore = userStore;

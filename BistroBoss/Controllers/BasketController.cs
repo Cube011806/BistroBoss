@@ -15,15 +15,13 @@ namespace BistroBoss.Controllers
     using System.Security.Claims;
     using System.Text.Json;
 
-    public class BasketController : Controller
+    public class BasketController : BaseController
     {
-        private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<Uzytkownik> _userManager;
         private const string SessionKeyKoszyk = "_Koszyk";
 
-        public BasketController(ApplicationDbContext dbContext, UserManager<Uzytkownik> userManager)
+        public BasketController(ApplicationDbContext dbContext, UserManager<Uzytkownik> userManager) : base(dbContext)
         {
-            _dbContext = dbContext;
             _userManager = userManager;
         }
 

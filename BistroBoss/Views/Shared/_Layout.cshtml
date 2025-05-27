@@ -81,6 +81,33 @@
                 color: #ffc107 !important;
                 text-decoration: none;
             }
+
+        /* ==== Dropdown menu styling ==== */
+        .navbar .dropdown-menu {
+            background-color: #b30000 !important; /* same red as navbar */
+            border: none;
+        }
+
+        .navbar .dropdown-item {
+            color: white !important;
+            background-color: transparent;
+        }
+
+            .navbar .dropdown-item:hover,
+            .navbar .dropdown-item:focus {
+                background-color: #8a0000 !important; /* darker red on hover */
+                color: #ffc107 !important; /* yellow highlight */
+            }
+
+        /* Dropdown toggle arrow color */
+        .navbar .dropdown-toggle::after {
+            color: white !important;
+        }
+
+        /* Fix dropdown toggle link color to white */
+        .navbar .nav-link.dropdown-toggle {
+            color: white !important;
+        }
     </style>
 </head>
 <body>
@@ -95,20 +122,50 @@
                     </button>
                     <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Menu" asp-action="Index">Menu</a>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Menu
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="menuDropdown">
+                                    @if (ViewData["Kategorie"] is IEnumerable<BistroBoss.Models.Kategoria> kategorie)
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Menu" asp-action="Index">
+                                                Wszystkie produkty
+                                            </a>
+                                        </li>
+                                        foreach (var kat in kategorie)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="Menu" asp-action="Index" asp-route-kategoriaId="@kat.Id">
+                                                    @kat.Nazwa
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Menu" asp-action="Index">
+                                                Wszystkie produkty
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
                             </li>
+
                             @if (User.Identity.IsAuthenticated && UserManager.FindByIdAsync(id).Result.AccessLevel == 1)
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Manage" asp-action="Index">Zarządzanie</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Manage" asp-action="Index">Zarządzanie</a>
                                 </li>
                             }
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Basket" asp-action="Index">Koszyk</a>
+                                <a class="nav-link" asp-area="" asp-controller="Basket" asp-action="Index">Koszyk</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Basket" asp-action="ShowMyOrders">Moje zamówienia</a>
+                                <a class="nav-link" asp-area="" asp-controller="Basket" asp-action="ShowMyOrders">Moje zamówienia</a>
                             </li>
                         </ul>
                         <partial name="_LoginPartial" />
@@ -134,4 +191,3 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-

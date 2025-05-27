@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using BistroBoss.Data;
 using BistroBoss.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BistroBoss.Areas.Identity.Pages.Account.Manage
 {
-    public class EnableAuthenticatorModel : PageModel
+    public class EnableAuthenticatorModel : BasePageModel
     {
         private readonly UserManager<Uzytkownik> _userManager;
         private readonly ILogger<EnableAuthenticatorModel> _logger;
@@ -26,9 +27,10 @@ namespace BistroBoss.Areas.Identity.Pages.Account.Manage
         private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
         public EnableAuthenticatorModel(
+            ApplicationDbContext dbContext,
             UserManager<Uzytkownik> userManager,
             ILogger<EnableAuthenticatorModel> logger,
-            UrlEncoder urlEncoder)
+            UrlEncoder urlEncoder) : base(dbContext)
         {
             _userManager = userManager;
             _logger = logger;

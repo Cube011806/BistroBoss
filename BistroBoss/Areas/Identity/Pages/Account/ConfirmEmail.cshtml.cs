@@ -12,17 +12,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using BistroBoss.Data;
 
 namespace BistroBoss.Areas.Identity.Pages.Account
 {
-    public class ConfirmEmailModel : PageModel
+    public class ConfirmEmailModel : BasePageModel
     {
         private readonly UserManager<Uzytkownik> _userManager;
 
-        public ConfirmEmailModel(UserManager<Uzytkownik> userManager)
+        public ConfirmEmailModel(ApplicationDbContext dbContext, UserManager<Uzytkownik> userManager) : base(dbContext)
         {
             _userManager = userManager;
         }
+
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used

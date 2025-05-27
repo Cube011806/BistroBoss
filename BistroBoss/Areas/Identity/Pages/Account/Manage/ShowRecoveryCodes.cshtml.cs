@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using BistroBoss.Data;
 using BistroBoss.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,8 +15,9 @@ namespace BistroBoss.Areas.Identity.Pages.Account.Manage
     ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
     ///     directly from your code. This API may change or be removed in future releases.
     /// </summary>
-    public class ShowRecoveryCodesModel : PageModel
+    public class ShowRecoveryCodesModel : BasePageModel
     {
+        public ShowRecoveryCodesModel(ApplicationDbContext dbContext) : base(dbContext) { }
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
