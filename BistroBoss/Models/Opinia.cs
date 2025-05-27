@@ -14,8 +14,8 @@ namespace BistroBoss.Models
         public byte Ocena { get; set; }
         public virtual int ZamowienieId { get; set; }
 
-        public virtual Zamowienie Zamowienie { get; set; } = null!;
+        public virtual Zamowienie Zamowienie { get; set; }
         public string UzytkownikId { get; set; } = string.Empty;
-        public Uzytkownik Uzytkownik { get; set; } = null!;
+        public Uzytkownik Uzytkownik { get; set; }
     }
 }

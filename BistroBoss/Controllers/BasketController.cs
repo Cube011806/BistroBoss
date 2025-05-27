@@ -128,6 +128,27 @@ namespace BistroBoss.Controllers
 
             return View(zamowienie);
         }
+        public IActionResult AddReview(int ZamowienieId)
+        {
+            ViewBag.ZamowienieId = ZamowienieId;
+            return View();
+        }
+        [HttpPost]
+        public IActionResult AddReview(Opinia opinia)
+        {
+            //if (ModelState.IsValid)
+            //{
+                opinia.UzytkownikId = _userManager.GetUserId(User);
+                _dbContext.Opinie.Add(opinia);
+                var zamowienie = _dbContext.Zamowienia.Include(z=>z.Opinia).FirstOrDefault(z=> z.Id ==opinia.ZamowienieId);
+                zamowienie.Opinia = opinia;
+                _dbContext.SaveChanges();
+
+                return RedirectToAction("ShowOrder", new { id = opinia.ZamowienieId });
+            //}
+            //return View(opinia);
+        }
+
         public IActionResult CancelOrder(int id)
         {
             var zamowienie = _dbContext.Zamowienia.FirstOrDefault(z => z.Id == id);

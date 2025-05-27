@@ -47,6 +47,35 @@ namespace BistroBoss.Controllers
             _dbContext.SaveChanges();
             return RedirectToAction("ShowOrder", "Manage", new { id });
         }
+        public IActionResult ShowUsers()
+        {
+            var users = _dbContext.Uzytkownicy.Where(u=>u.Email != null).ToList();
+            return View(users);
+        }
+        public IActionResult MakeAdmin(string id)
+        {
+            var user = _dbContext.Uzytkownicy.Find(id);
+            user.AccessLevel = 1;
+            _dbContext.Uzytkownicy.Update(user);
+            _dbContext.SaveChanges();
+            return RedirectToAction("ShowUsers");
+        }
+
+        public IActionResult UnmakeAdmin(string id)
+        {
+            var user = _dbContext.Uzytkownicy.Find(id);
+            user.AccessLevel = 0;
+            _dbContext.Uzytkownicy.Update(user);
+            _dbContext.SaveChanges();
+            return RedirectToAction("ShowUsers");
+        }
+        public IActionResult RemoveUser(string id)
+        {
+            var user = _dbContext.Users.Find(id);
+            _dbContext.Users.Remove(user);
+            _dbContext.SaveChanges();
+            return RedirectToAction("ShowUsers");
+        }
         public IActionResult SetInPreparation(int id)
         {
             var zamowienie = _dbContext.Zamowienia.FirstOrDefault(z => z.Id == id);

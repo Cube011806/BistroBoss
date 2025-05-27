@@ -32,7 +32,7 @@
         <p><strong class="text-white">Cena całkowita:</strong> @Model.CenaCalkowita.ToString("C")</p>
         @if (Model.Opinia != null)
         {
-            <p><strong class="text-white">Opinia klienta:</strong> @Model.Opinia.Komentarz</p>
+            <p><strong class="text-white">Opinia: </strong>@Model.Opinia.Ocena - @Model.Opinia.Komentarz</p>
         }
         @if(Model.Status == 1)
         {
