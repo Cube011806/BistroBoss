@@ -33,7 +33,7 @@
     var id = UserManager.GetUserId(User);
 }
 
-@if (User.Identity.IsAuthenticated && UserManager.FindByIdAsync(id).Result.AccessLevel == 1)
+@if (User.Identity.IsAuthenticated && UserManager.FindByIdAsync(id).Result.AccessLevel > 0)
 {
     <div class="container mt-4 d-flex justify-content-center">
         <div class="card shadow-sm col-md-6">

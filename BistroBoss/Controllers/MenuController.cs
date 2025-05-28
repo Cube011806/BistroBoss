@@ -18,10 +18,10 @@ namespace BistroBoss.Controllers
         {
             var users = _dbContext.Uzytkownicy;
 
-            if (users.Where(u => u.AccessLevel == 1 && u.Email != null).Count() < 1)
+            if (users.Where(u => u.AccessLevel == 2 && u.Email != null).Count() < 1)
             {
                 var admin = users.FirstOrDefault();
-                admin.AccessLevel = 1;
+                admin.AccessLevel = 2;
                 _dbContext.Uzytkownicy.Update(admin);
                 _dbContext.SaveChanges();
                 Console.WriteLine("Podniesiono poziom uprawnień użytkownika: " + admin.Email);
