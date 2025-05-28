@@ -12,6 +12,7 @@ namespace BistroBoss.Controllers
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using NuGet.Protocol;
     using System.Security.Claims;
     using System.Text.Json;
 
@@ -110,10 +111,13 @@ namespace BistroBoss.Controllers
         }
         public IActionResult ShowMyOrders()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = _userManager.GetUserId(User);
+            var user = _dbContext.Uzytkownicy.Find(userId);
             var zamowienia = _dbContext.Zamowienia;
-            var mojeZamowienia = zamowienia.Where(z => z.UzytkownikId == userId).ToList();
-            return View(mojeZamowienia);
+
+                var mojeZamowienia = zamowienia.Where(z => z.UzytkownikId == user.Id).ToList();
+                return View(mojeZamowienia);
+
         }
         public IActionResult ShowOrder(int id)
         {
@@ -167,7 +171,10 @@ namespace BistroBoss.Controllers
             }
             return JsonSerializer.Deserialize<KoszykSessionDto>(json) ?? new KoszykSessionDto();
         }
-
+        public IActionResult ReOrder(int id)
+        {
+            throw new NotImplementedException();
+        }
         private void SaveSessionKoszyk(KoszykSessionDto koszyk)
         {
             var json = JsonSerializer.Serialize(koszyk);

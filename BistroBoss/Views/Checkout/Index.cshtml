@@ -17,6 +17,22 @@
 
         <div id="deliveryFields1">
             <div class="col-12">
+                <label class="form-label">Imię</label>
+                <input asp-for="Uzytkownik.Imie" class="form-control" required />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Nazwisko</label>
+                <input asp-for="Uzytkownik.Nazwisko" class="form-control" required />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Email</label>
+                <input asp-for="Uzytkownik.Email" class="form-control" type="email" required />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Numer telefonu</label>
+                <input asp-for="Uzytkownik.PhoneNumber" class="form-control" type="tel" required />
+            </div>
+            <div class="col-12">
                 <label class="form-label">Miejscowość</label>
                 <input asp-for="Miejscowosc" class="form-control" required />
             </div>
@@ -44,19 +60,19 @@ else
     <form asp-action="SubmitOrder" method="post" class="row g-3">
         <div class="col-12">
             <label class="form-label">Imię</label>
-            <input asp-for="Uzytkownik.Imie" class="form-control" required />
+            <input class="form-control" required />
         </div>
         <div class="col-12">
             <label class="form-label">Nazwisko</label>
-            <input asp-for="Uzytkownik.Nazwisko" class="form-control" required />
+            <input class="form-control" required />
         </div>
         <div class="col-12">
             <label class="form-label">Email</label>
-            <input asp-for="Uzytkownik.Email" class="form-control" type="email" required />
+            <input  class="form-control" type="email" required />
         </div>
         <div class="col-12">
             <label class="form-label">Numer telefonu</label>
-            <input asp-for="Uzytkownik.PhoneNumber" class="form-control" type="tel" required />
+            <input class="form-control" type="tel" required />
         </div>
 
         <div class="col-12">
