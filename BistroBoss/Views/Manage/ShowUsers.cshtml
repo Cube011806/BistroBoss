@@ -1,10 +1,12 @@
 ﻿@model ICollection<Uzytkownik>
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<Uzytkownik> UserManager
+
 @{
     var id = UserManager.GetUserId(User);
     var currentUser = await UserManager.FindByIdAsync(id);
 }
+
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
@@ -20,7 +22,45 @@
     </div>
 }
 
-@if (User.Identity.IsAuthenticated && UserManager.FindByIdAsync(id).Result.AccessLevel == 2)
+<style>
+    .card-header {
+        background-color: #1a237e !important;
+        color: white !important;
+        text-align: center;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+        .card-header h4 {
+            color: white !important;
+            margin-bottom: 0;
+        }
+
+    .card {
+        background-color: #444444 !important;
+        color: white !important;
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        height: 100%;
+    }
+
+    .card-body {
+        background-color: #444444 !important;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    .btn {
+        margin: 0.25rem 0.25rem 0 0;
+    }
+
+    .container h2 {
+        color: white;
+    }
+</style>
+
+@if (User.Identity.IsAuthenticated && currentUser.AccessLevel == 2)
 {
     <div class="container mt-4">
         <h2 class="text-center mb-4">Użytkownicy</h2>
@@ -37,9 +77,9 @@
                 @foreach (var user in Model)
                 {
                     <div class="col-md-4 mb-4">
-                        <div class="card border-dark">
-                            <div class="card-header text-center">
-                                <h4 class="mb-0">@user.Email</h4>
+                        <div class="card shadow-lg border-0">
+                            <div class="card-header">
+                                <h4>@user.Email</h4>
                             </div>
                             <div class="card-body">
                                 <p>
@@ -61,23 +101,16 @@
                                 </p>
                                 @if (user.AccessLevel == 0)
                                 {
-                                    <a asp-action="MakeAdmin" asp-route-id="@user.Id" class="btn btn-info">
-                                        Uczyń pracownikiem
-                                    </a>
+                                    <a asp-action="MakeAdmin" asp-route-id="@user.Id" class="btn btn-info">Uczyń pracownikiem</a>
                                 }
                                 else if (user.AccessLevel > 0 && user != currentUser)
                                 {
-                                    <a asp-action="UnmakeAdmin" asp-route-id="@user.Id" class="btn btn-info">
-                                        Uczyń użytkownikiem
-                                    </a>
+                                    <a asp-action="UnmakeAdmin" asp-route-id="@user.Id" class="btn btn-info">Uczyń użytkownikiem</a>
                                 }
-                                @if(user.AccessLevel != 2)
+                                @if (user.AccessLevel != 2)
                                 {
-                                    <a asp-action="RemoveUser" asp-route-id="@user.Id" class="btn btn-danger">
-                                        Usuń użytkownika
-                                    </a>
+                                    <a asp-action="RemoveUser" asp-route-id="@user.Id" class="btn btn-danger">Usuń użytkownika</a>
                                 }
-
                             </div>
                         </div>
                     </div>

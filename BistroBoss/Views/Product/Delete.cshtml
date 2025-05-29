@@ -1,11 +1,7 @@
 ﻿@model Produkt
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
 @{
     ViewData["Title"] = "BistroBoss - Usunięcie produktu";
 }
-
 
 @if (TempData["ErrorMessage"] != null)
 {
@@ -23,27 +19,30 @@
 }
 
 <style>
+    .card-header {
+        background-color: #1a237e !important;
+        color: white !important;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        text-align: center;
+    }
+
+        .card-header h3 {
+            color: white !important;
+        }
+
     .card {
-        background-color: #5a5a5a;
-        color: #f1f1f1;
+        background-color: #444444 !important;
+        color: white;
         border: none;
         border-radius: 10px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        transition: none;
     }
 
-    .card:hover {
-        transform: none;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    .card-title {
-        color: #ffc107;
-    }
-
-    .card img.img-thumbnail {
-        background-color: transparent;
-        border: 1px solid #666;
+    .card-body {
+        background-color: #444444 !important;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
     }
 
     .card .text-muted {
@@ -59,14 +58,16 @@
     <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10 col-sm-12">
             <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center">
+                <div class="card-header">
                     <h3 class="mb-0">Czy na pewno chcesz usunąć '@Model.Nazwa' z menu?</h3>
                 </div>
                 <div class="card-body text-center">
                     <form asp-action="Delete" method="post">
                         <input type="hidden" name="id" value="@Model.Id" />
-                        <button type="submit" class="btn btn-danger me-2">Potwierdź</button>
-                        <a asp-action="Index" asp-controller="Menu" class="btn btn-secondary">Anuluj</a>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a asp-action="Index" asp-controller="Menu" class="btn btn-secondary">Anuluj</a>
+                            <button type="submit" class="btn btn-danger">Potwierdź</button>
+                        </div>
                     </form>
                 </div>
             </div>

@@ -20,39 +20,31 @@
 }
 
 <style>
+    /* ✅ Card header background and font */
+    .card-header {
+        background-color: #1a237e !important;
+        color: white !important;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        text-align: center;
+    }
+
+        .card-header h3 {
+            color: white !important;
+        }
+
+    /* ✅ Card body background */
     .card {
-        background-color: #5a5a5a;
-        color: #f1f1f1;
+        background-color: #444444 !important;
         border: none;
         border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        transition: none;
-    }
-
-    .card:hover {
-        transform: none;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    .card-title {
-        color: #ffc107;
-    }
-
-    .card img.img-thumbnail {
-        background-color: transparent;
-        border: 1px solid #666;
-    }
-
-    .card .text-muted {
-        color: #f1f1f1 !important;
-    }
-
-    .mb-0 {
         color: white;
     }
 
-    .main {
-        margin-bottom: 2rem;
+    .card-body {
+        background-color: #444444 !important;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
     }
 </style>
 
@@ -60,7 +52,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10 col-sm-12">
             <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center">
+                <div class="card-header">
                     <h3 class="mb-0">Dodaj produkt</h3>
                 </div>
                 <div class="card-body">

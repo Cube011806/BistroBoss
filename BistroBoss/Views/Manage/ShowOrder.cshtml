@@ -1,5 +1,8 @@
 ﻿@model Zamowienie
 
+@{
+    ViewData["Title"] = "Szczegóły zamówienia";
+}
 
 @if (TempData["ErrorMessage"] != null)
 {
@@ -16,57 +19,91 @@
     </div>
 }
 
-<div class="container mt-4">
-    <h2 class="text-center text-white">Szczegóły zamówienia</h2>
+<style>
+    /* Stronger selector and !important to override Bootstrap */
+    div.card {
+        background-color: #444444 !important;
+        border: none;
+        border-radius: 10px;
+        color: white;
+    }
 
-    <div class="card bg-dark text-white p-3">
-        <p><strong class="text-white">Data zamówienia:</strong> @Model.DataZamowienia.ToString("dd-MM-yyyy HH:mm")</p>
-        <p><strong class="text-white">Adres dostawy:</strong> @Model.Ulica @Model.NumerBudynku, @Model.KodPocztowy @Model.Miejscowosc</p>
-        <p><strong class="text-white">Przewidywany czas realizacji:</strong> @Model.PrzewidywanyCzasRealizacji min</p>
-        <p><strong class="text-white">Status:</strong> 
-            @if(Model.Status == 0) 
-            { 
-                <span class="text-warning">Anulowane</span> 
+    div.card-header {
+        background-color: #1a237e !important;
+        color: white !important;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        text-align: center;
+        padding: 1rem;
+    }
+
+        div.card-header h3 {
+            color: white !important;
+            margin: 0;
+        }
+
+    div.card-body {
+        background-color: #444444 !important;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        padding: 1rem;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="card shadow-lg border-0">
+        <div class="card-header">
+            <h3>Szczegóły zamówienia</h3>
+        </div>
+        <div class="card-body">
+            <p><strong>Data zamówienia:</strong> @Model.DataZamowienia.ToString("dd-MM-yyyy HH:mm")</p>
+            <p><strong>Adres dostawy:</strong> @Model.Ulica @Model.NumerBudynku, @Model.KodPocztowy @Model.Miejscowosc</p>
+            <p><strong>Przewidywany czas realizacji:</strong> @Model.PrzewidywanyCzasRealizacji min</p>
+            <p>
+                <strong>Status:</strong>
+                @if (Model.Status == 0)
+                {
+                    <span class="text-warning">Anulowane</span>
+                }
+                else if (Model.Status == 1)
+                {
+                    <span class="text-info">Złożone</span>
+                }
+                else if (Model.Status == 2)
+                {
+                    <span class="text-primary">W przygotowaniu</span>
+                }
+                else if (Model.Status == 3)
+                {
+                    <span class="text-success">W dostawie</span>
+                }
+                else if (Model.Status == 4)
+                {
+                    <span class="text-success">Zrealizowane</span>
+                }
+            </p>
+            <p><strong>Cena całkowita:</strong> @Model.CenaCalkowita.ToString("C")</p>
+            @if (Model.Opinia != null)
+            {
+                <p><strong>Opinia: </strong>@Model.Opinia.Ocena - @Model.Opinia.Komentarz</p>
             }
-            else if (Model.Status == 1) 
-            { 
-                <span class="text-info">Złożone</span> 
+            @if (Model.Status == 1)
+            {
+                <a asp-action="SetInPreparation" asp-route-id="@Model.Id" class="btn btn-success text-white">Ustaw status zamówienia jako 'W przygotowaniu'</a>
             }
             else if (Model.Status == 2)
             {
-                <span class="text-primary">W przygotowaniu</span>
+                <a asp-action="SetInDelivery" asp-route-id="@Model.Id" class="btn btn-success text-white">Ustaw status zamówienia jako 'W dostawie'</a>
             }
             else if (Model.Status == 3)
             {
-                <span class="text-success">W dostawie</span>
+                <a asp-action="SetCompleted" asp-route-id="@Model.Id" class="btn btn-success text-white">Ustaw status zamówienia jako 'Zrealizowane'</a>
             }
-            else if (Model.Status == 4)
+            @if (Model.Status != 3 && Model.Status != 4 && Model.Status != 0)
             {
-                <span class="text-success">Zrealizowane</span>
+                <a asp-action="SetCancelled" asp-route-id="@Model.Id" class="btn btn-danger text-white">Anuluj zamówienie</a>
             }
-        </p>
-        <p><strong class="text-white">Cena całkowita:</strong> @Model.CenaCalkowita.ToString("C")</p>
-        @if (Model.Opinia != null)
-        {
-            <p><strong class="text-white">Opinia: </strong>@Model.Opinia.Ocena - @Model.Opinia.Komentarz</p>
-        }
-        @if(Model.Status == 1)
-        {
-            <a asp-action="SetInPreparation" asp-route-id="@Model.Id" class="btn btn-success text-white">Ustaw status zamówienia jako 'W przygotowaniu'</a>
-        }
-        else if (Model.Status == 2)
-        {
-            <a asp-action="SetInDelivery" asp-route-id="@Model.Id" class="btn btn-success text-white">Ustaw status zamówienia jako 'W dostawie'</a>
-        }
-        else if (Model.Status == 3)
-        {
-            <a asp-action="SetCompleted" asp-route-id="@Model.Id" class="btn btn-success text-white">Ustaw status zamówienia jako 'Zrealizowane'</a>
-        }
-        @if (Model.Status != 3 && Model.Status != 4 && Model.Status != 0)
-        {
-            <a asp-action="SetCancelled" asp-route-id="@Model.Id" class="btn btn-danger text-white">Anuluj zamówienie</a>
-        }
-       
+        </div>
     </div>
 
     <h3 class="text-center text-white mt-4">Zamówione produkty</h3>
@@ -85,23 +122,23 @@
         <tbody>
             @foreach (var produkt in Model.ZamowioneProdukty)
             {
-                <tr class="bg-dark text-white">
-                    <td>@produkt.Produkt.Nazwa</td>
-                    <td>@produkt.Produkt.Opis</td>
-                    <td>@produkt.Produkt.Cena.ToString("C")</td>
-                    <td>@produkt.Produkt.CzasPrzygotowania min</td>
-                    <td>@produkt.Produkt.Kategoria.Nazwa</td>
-                    <td>
+                <tr>
+                    <td class="bg-secondary text-white">@produkt.Produkt.Nazwa</td>
+                    <td class="bg-secondary text-white">@produkt.Produkt.Opis</td>
+                    <td class="bg-secondary text-white">@produkt.Produkt.Cena.ToString("C")</td>
+                    <td class="bg-secondary text-white">@produkt.Produkt.CzasPrzygotowania min</td>
+                    <td class="bg-secondary text-white">@produkt.Produkt.Kategoria.Nazwa</td>
+                    <td class="bg-secondary text-white">
                         @if (!string.IsNullOrEmpty(produkt.Produkt.Zdjecie))
                         {
-                            <img src="@produkt.Produkt.Zdjecie" alt="Zdjęcie produktu" class="img-thumbnail" style="width: 100px;">
+                            <img src="@produkt.Produkt.Zdjecie" alt="Zdjęcie produktu" class="img-thumbnail" style="width: 100px;" />
                         }
                         else
                         {
-                            <span class="text-white">Brak zdjęcia</span>
+                            <span>Brak zdjęcia</span>
                         }
                     </td>
-                    <td>@produkt.Ilosc</td>
+                    <td class="bg-secondary text-white">@produkt.Ilosc</td>
                 </tr>
             }
         </tbody>
