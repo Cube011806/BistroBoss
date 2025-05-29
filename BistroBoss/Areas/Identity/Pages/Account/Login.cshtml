@@ -5,38 +5,79 @@
     ViewData["Title"] = "Zaloguj się";
 }
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <form id="account" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label asp-for="Input.Email" class="form-label text-black">Email</label>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+<style>
+    .card-header {
+        background-color: #1a237e !important;
+        color: white !important;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        text-align: center;
+    }
+
+        .card-header h3 {
+            color: white !important;
+        }
+
+    .card {
+        background-color: #444444 !important;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-body {
+        background-color: #444444 !important;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    .form-label {
+        color: white !important;
+    }
+</style>
+
+<div class="container py-3 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header">
+                    <h3 class="mb-0">@ViewData["Title"]</h3>
                 </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="hasło" />
-                    <label asp-for="Input.Password" class="form-label text-black">Hasło</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                <div class="card-body">
+                    <form id="account" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Email" class="form-control shadow-sm" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                            <label asp-for="Input.Email" class="form-label">Email</label>
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Password" class="form-control shadow-sm" autocomplete="current-password" aria-required="true" placeholder="Hasło" />
+                            <label asp-for="Input.Password" class="form-label">Hasło</label>
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="checkbox mb-3">
+                            <label asp-for="Input.RememberMe" class="form-label">
+                                <input class="form-check-input" asp-for="Input.RememberMe" />
+                                @Html.DisplayNameFor(m => m.Input.RememberMe)
+                            </label>
+                        </div>
+
+                        <div class="d-grid mb-3">
+                            <button id="login-submit" type="submit" class="btn btn-primary btn-lg shadow-sm">Zaloguj się</button>
+                        </div>
+
+                        <div class="text-center">
+                            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="text-white">Zarejestruj jako nowy użytkownik</a>
+                        </div>
+                    </form>
                 </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
-                </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Zaloguj się</button>
-                </div>
-                <div>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Zarejestruj jako nowy użytkownik</a>
-                    </p>
-                </div>
-            </form>
-        </section>
+            </div>
+        </div>
     </div>
 </div>
 

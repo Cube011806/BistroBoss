@@ -84,7 +84,8 @@ namespace BistroBoss.Controllers
                 }
 
                 _dbContext.SaveChanges();
-                return RedirectToAction("Index");
+                TempData["SuccessMessage"] = "Produkt został pomyślnie dodany do koszyka!";
+                return RedirectToAction("Index","Menu");
             }
             else
             {
@@ -132,24 +133,28 @@ namespace BistroBoss.Controllers
         }
         public IActionResult AddReview(int ZamowienieId)
         {
-            ViewBag.ZamowienieId = ZamowienieId;
-            return View();
+            var model = new Opinia
+            {
+                ZamowienieId = ZamowienieId,
+                Ocena = 1
+            };
+            return View(model);
         }
+
         [HttpPost]
         public IActionResult AddReview(Opinia opinia)
         {
-            //if (ModelState.IsValid)
-            //{
-                opinia.UzytkownikId = _userManager.GetUserId(User);
-                _dbContext.Opinie.Add(opinia);
-                var zamowienie = _dbContext.Zamowienia.Include(z=>z.Opinia).FirstOrDefault(z=> z.Id ==opinia.ZamowienieId);
-                zamowienie.Opinia = opinia;
-                _dbContext.SaveChanges();
+            opinia.UzytkownikId = _userManager.GetUserId(User);
+            _dbContext.Opinie.Add(opinia);
 
-                return RedirectToAction("ShowOrder", new { id = opinia.ZamowienieId });
-            //}
-            //return View(opinia);
+            var zamowienie = _dbContext.Zamowienia.Include(z => z.Opinia).FirstOrDefault(z => z.Id == opinia.ZamowienieId);
+            zamowienie.Opinia = opinia;
+
+            _dbContext.SaveChanges();
+
+            return RedirectToAction("ShowOrder", new { id = opinia.ZamowienieId });
         }
+
 
         public IActionResult CancelOrder(int id)
         {
@@ -216,8 +221,18 @@ namespace BistroBoss.Controllers
 
             if (koszykProdukt != null)
             {
-                _dbContext.KoszykProdukty.Remove(koszykProdukt);
-                _dbContext.SaveChanges();
+                if(koszykProdukt.Ilosc > 1)
+                {
+                    koszykProdukt.Ilosc = koszykProdukt.Ilosc - 1;
+                    _dbContext.SaveChanges();
+                    TempData["SuccessMessage"] = "Usunięto sztukę produktu z koszyka!";
+                }
+                else
+                {
+                    _dbContext.KoszykProdukty.Remove(koszykProdukt);
+                    _dbContext.SaveChanges();
+                    TempData["SuccessMessage"] = "Usunięto produkt z koszyka!";
+                }
             }
 
             return RedirectToAction("Index");

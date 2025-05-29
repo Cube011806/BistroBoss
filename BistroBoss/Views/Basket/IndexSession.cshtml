@@ -5,21 +5,29 @@
 }
 
 <style>
+    /* Card container */
     .card {
-        background-color: #5a5a5a !important;
+        background-color: #444444 !important; /* dark gray background for rest of card */
         color: #f1f1f1 !important;
         border: none;
         border-radius: 10px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
+    /* Card header */
     .card-header {
-        background-color: #5a5a5a !important;
+        background-color: #1a237e !important; /* deep indigo */
         color: white !important;
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
     }
 
+        /* Override h3 inside card-header */
+        .card-header h3 {
+            color: white !important;
+        }
+
+    /* Card body */
     .card-body {
         background-color: #444444 !important;
         color: #f1f1f1 !important;
@@ -28,6 +36,7 @@
         border-bottom-right-radius: 10px;
     }
 
+    /* Table styling */
     table.table {
         color: #f1f1f1;
         background-color: #6c757d;
@@ -35,7 +44,7 @@
     }
 
         table.table thead {
-            background-color: #495057; 
+            background-color: #343a40;
             color: #ffc107;
         }
 
@@ -58,15 +67,30 @@
     p.text-center {
         font-style: italic;
         font-size: 1.2rem;
-        color: #ddd;
+        color: #ffffff;
     }
 </style>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+        <strong>@TempData["ErrorMessage"]</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+        <strong>@TempData["SuccessMessage"]</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 
 <div class="container py-3">
     <div class="row justify-content-center">
         <div class="col-lg-10 col-md-12">
             <div class="card shadow-lg border-0">
-                <div class="card-header text-center">
+                <div class="card-header text-white text-center">
                     <h3 class="mb-0">Twój Koszyk (Gość)</h3>
                 </div>
                 <div class="card-body">
@@ -89,9 +113,9 @@
                                 @foreach (var item in Model.Produkty)
                                 {
                                     <tr>
-                                        <td>@item.Nazwa</td>
-                                        <td>@item.Ilosc</td>
-                                        <td>
+                                        <td class="text-white bg-secondary">@item.Nazwa</td>
+                                        <td class="text-white bg-secondary">@item.Ilosc</td>
+                                        <td class="text-white bg-secondary">
                                             <form asp-action="RemoveFromSessionBasket" asp-route-id="@item.ProduktId" method="post">
                                                 <button class="btn btn-danger btn-sm">Usuń produkt</button>
                                             </form>

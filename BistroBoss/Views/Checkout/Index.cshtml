@@ -1,119 +1,187 @@
 ﻿@model Zamowienie
 
-@if (User.Identity.IsAuthenticated)
+@if (TempData["ErrorMessage"] != null)
 {
-    <form asp-action="SubmitOrder" method="post" class="row g-3">
-        <div class="col-12">
-            <label class="form-label">Metoda dostawy</label>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="deliveryMethod" value="true" id="radioDelivery1" checked />
-                <label class="form-check-label" for="radioDelivery1">Dostawa</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="deliveryMethod" value="false" id="radioPickup1" />
-                <label class="form-check-label" for="radioPickup1">Odbiór osobisty</label>
-            </div>
-        </div>
-
-        <div id="deliveryFields1">
-            <div class="col-12">
-                <label class="form-label">Imię</label>
-                <input asp-for="Uzytkownik.Imie" class="form-control" required />
-            </div>
-            <div class="col-12">
-                <label class="form-label">Nazwisko</label>
-                <input asp-for="Uzytkownik.Nazwisko" class="form-control" required />
-            </div>
-            <div class="col-12">
-                <label class="form-label">Email</label>
-                <input asp-for="Uzytkownik.Email" class="form-control" type="email" required />
-            </div>
-            <div class="col-12">
-                <label class="form-label">Numer telefonu</label>
-                <input asp-for="Uzytkownik.PhoneNumber" class="form-control" type="tel" required />
-            </div>
-            <div class="col-12">
-                <label class="form-label">Miejscowość</label>
-                <input asp-for="Miejscowosc" class="form-control" required />
-            </div>
-            <div class="col-12">
-                <label class="form-label">Ulica</label>
-                <input asp-for="Ulica" class="form-control" required />
-            </div>
-            <div class="col-12">
-                <label class="form-label">Numer budynku</label>
-                <input asp-for="NumerBudynku" class="form-control" required />
-            </div>
-            <div class="col-12">
-                <label class="form-label">Kod pocztowy</label>
-                <input asp-for="KodPocztowy" class="form-control" required />
-            </div>
-        </div>
-
-        <div class="col-12 mt-3">
-            <button type="submit" class="btn btn-success btn-lg w-100 shadow-sm">Zamów (płatność gotówką)</button>
-        </div>
-    </form>
+    <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+        <strong>@TempData["ErrorMessage"]</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 }
-else
+@if (TempData["SuccessMessage"] != null)
 {
-    <form asp-action="SubmitOrder" method="post" class="row g-3">
-        <div class="col-12">
-            <label class="form-label">Imię</label>
-            <input class="form-control" required />
-        </div>
-        <div class="col-12">
-            <label class="form-label">Nazwisko</label>
-            <input class="form-control" required />
-        </div>
-        <div class="col-12">
-            <label class="form-label">Email</label>
-            <input  class="form-control" type="email" required />
-        </div>
-        <div class="col-12">
-            <label class="form-label">Numer telefonu</label>
-            <input class="form-control" type="tel" required />
-        </div>
-
-        <div class="col-12">
-            <label class="form-label">Metoda dostawy</label>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="deliveryMethod" value="true" id="radioDelivery2" checked />
-                <label class="form-check-label" for="radioDelivery2">Dostawa</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="deliveryMethod" value="false" id="radioPickup2" />
-                <label class="form-check-label" for="radioPickup2">Odbiór osobisty</label>
-            </div>
-        </div>
-
-        <div id="deliveryFields2">
-            <div class="col-12">
-                <label class="form-label">Miejscowość</label>
-                <input asp-for="Miejscowosc" class="form-control" required />
-            </div>
-            <div class="col-12">
-                <label class="form-label">Ulica</label>
-                <input asp-for="Ulica" class="form-control" required />
-            </div>
-            <div class="col-12">
-                <label class="form-label">Numer budynku</label>
-                <input asp-for="NumerBudynku" class="form-control" required />
-            </div>
-            <div class="col-12">
-                <label class="form-label">Kod pocztowy</label>
-                <input asp-for="KodPocztowy" class="form-control" required />
-            </div>
-        </div>
-
-        <div class="col-12 mt-3">
-            <button type="submit" class="btn btn-success btn-lg w-100 shadow-sm">Zamów (płatność gotówką)</button>
-        </div>
-    </form>
+    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+        <strong>@TempData["SuccessMessage"]</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 }
 
+<style>
+    .card-header {
+        background-color: #1a237e !important;
+        color: white !important;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        text-align: center;
+    }
 
+        .card-header h3 {
+            color: white !important;
+        }
 
+    .card {
+        background-color: #444444 !important;
+        border: none;
+        border-radius: 10px;
+        color: white;
+    }
+
+    .card-body {
+        background-color: #444444 !important;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    .form-label {
+        color: #f1f1f1;
+        font-weight: 600;
+    }
+
+    input.form-control,
+    select.form-select,
+    textarea.form-control {
+        background-color: white;
+        color: #212529;
+        border: 1px solid #ccc;
+        box-shadow: 0 .1rem .3rem rgba(0,0,0,.1);
+    }
+</style>
+
+<div class="container py-3 mb-5 main">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-header">
+                    <h3 class="mb-0">Złóż zamówienie</h3>
+                </div>
+                <div class="card-body">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form asp-action="SubmitOrder" method="post" class="row g-3">
+                            @Html.HiddenFor(x => x.Id)
+
+                            <div class="col-12 mb-3">
+                                <label class="form-label mb-2">Metoda dostawy</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="deliveryMethod" value="true" id="radioDelivery1" checked />
+                                    <label class="form-check-label" for="radioDelivery1">Dostawa</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="deliveryMethod" value="false" id="radioPickup1" />
+                                    <label class="form-check-label" for="radioPickup1">Odbiór osobisty</label>
+                                </div>
+                            </div>
+
+                            <div id="deliveryFields1">
+                                <div class="col-12 mb-3">
+                                    <label class="form-label mb-2">Imię</label>
+                                    <input asp-for="Uzytkownik.Imie" class="form-control shadow-sm" required />
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label mb-2">Nazwisko</label>
+                                    <input asp-for="Uzytkownik.Nazwisko" class="form-control shadow-sm" required />
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label mb-2">Email</label>
+                                    <input asp-for="Uzytkownik.Email" type="email" class="form-control shadow-sm" required />
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label mb-2">Numer telefonu</label>
+                                    <input asp-for="Uzytkownik.PhoneNumber" type="tel" class="form-control shadow-sm" required />
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label mb-2">Miejscowość</label>
+                                    <input asp-for="Miejscowosc" class="form-control shadow-sm" required />
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label mb-2">Ulica</label>
+                                    <input asp-for="Ulica" class="form-control shadow-sm" required />
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label mb-2">Numer budynku</label>
+                                    <input asp-for="NumerBudynku" class="form-control shadow-sm" required />
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label mb-2">Kod pocztowy</label>
+                                    <input asp-for="KodPocztowy" class="form-control shadow-sm" required />
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-3">
+                                <button type="submit" class="btn btn-success btn-lg w-100 shadow-sm">Zamów (płatność gotówką)</button>
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="SubmitOrder" method="post" class="row g-3">
+                            <div class="col-12 mb-3">
+                                <label class="form-label mb-2">Imię</label>
+                                <input class="form-control shadow-sm" name="Imie" required />
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label mb-2">Nazwisko</label>
+                                <input class="form-control shadow-sm" name="Nazwisko" required />
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label mb-2">Email</label>
+                                <input class="form-control shadow-sm" name="Email" type="email" required />
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label mb-2">Numer telefonu</label>
+                                <input class="form-control shadow-sm" name="PhoneNumber" type="tel" required />
+                            </div>
+
+                            <div class="col-12 mb-3">
+                                <label class="form-label mb-2">Metoda dostawy</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="deliveryMethod" value="true" id="radioDelivery2" checked />
+                                    <label class="form-check-label" for="radioDelivery2">Dostawa</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="deliveryMethod" value="false" id="radioPickup2" />
+                                    <label class="form-check-label" for="radioPickup2">Odbiór osobisty</label>
+                                </div>
+                            </div>
+
+                            <div id="deliveryFields2">
+                                <div class="col-12 mb-3">
+                                    <label class="form-label mb-2">Miejscowość</label>
+                                    <input asp-for="Miejscowosc" class="form-control shadow-sm" required />
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label mb-2">Ulica</label>
+                                    <input asp-for="Ulica" class="form-control shadow-sm" required />
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label mb-2">Numer budynku</label>
+                                    <input asp-for="NumerBudynku" class="form-control shadow-sm" required />
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label mb-2">Kod pocztowy</label>
+                                    <input asp-for="KodPocztowy" class="form-control shadow-sm" required />
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-3">
+                                <button type="submit" class="btn btn-success btn-lg w-100 shadow-sm">Zamów (płatność gotówką)</button>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
