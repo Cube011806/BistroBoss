@@ -50,25 +50,26 @@ namespace BistroBoss.Controllers
                 zamowienie.NumerBudynku = "";
                 zamowienie.KodPocztowy = "";
             }
-
+            var userId = "";
             if (User.Identity.IsAuthenticated)
             {
                 zamowienie.UzytkownikId = _userManager.GetUserId(User);
+                userId = _userManager.GetUserId(User);
             }
             else
             {
-                var guest = new Uzytkownik
-                {
-                    Imie = uzytkownik.Imie,
-                    Nazwisko = uzytkownik.Nazwisko,
-                    Email = uzytkownik.Email,
-                    PhoneNumber = uzytkownik.PhoneNumber,
-                    UserName = uzytkownik.Email
-                };
+                //var guest = new Uzytkownik
+                //{
+                //    Imie = uzytkownik.Imie,
+                //    Nazwisko = uzytkownik.Nazwisko,
+                //    Email = uzytkownik.Email,
+                //    PhoneNumber = uzytkownik.PhoneNumber,
+                //    UserName = uzytkownik.Email
+                //};
 
-                _dbContext.Users.Add(guest);
-                _dbContext.SaveChanges();
-                zamowienie.UzytkownikId = guest.Id;
+                //_dbContext.Users.Add(guest);
+                //_dbContext.SaveChanges();
+                //zamowienie.UzytkownikId = guest.Id;
             }
             zamowienie.Status = 1;
             foreach(var produkt in koszyk.KoszykProdukty)
@@ -86,7 +87,9 @@ namespace BistroBoss.Controllers
             }
             zamowienie.PrzewidywanyCzasRealizacji = czasMax;
             zamowienie.CenaCalkowita = cenaCalkowita;
-            _dbContext.Zamowienia.Add(zamowienie);
+            var user = _dbContext.Uzytkownicy.Find(userId);
+            user.Zamowienia.Add(zamowienie);
+            _dbContext.Uzytkownicy.Update(user);
             _dbContext.SaveChanges();
 
             TempData["SuccessMessage"] = "Zamówienie zostało złożone, dziękujemy! Numer zamówienia: " + zamowienie.Id;

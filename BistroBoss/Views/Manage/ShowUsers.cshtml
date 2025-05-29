@@ -3,8 +3,9 @@
 @inject UserManager<Uzytkownik> UserManager
 @{
     var id = UserManager.GetUserId(User);
+    var currentUser = await UserManager.FindByIdAsync(id);
 }
-@if (User.Identity.IsAuthenticated && UserManager.FindByIdAsync(id).Result.AccessLevel == 1)
+@if (User.Identity.IsAuthenticated && UserManager.FindByIdAsync(id).Result.AccessLevel == 2)
 {
     <div class="container mt-4">
         <h2 class="text-center mb-4">Użytkownicy</h2>
@@ -29,24 +30,39 @@
                                 <p>
                                     Poziom dostępu:
                                     <span>
-                                        @(user.AccessLevel == 1 ? "Administrator" : "Użytkownik")
+                                        @if (user.AccessLevel == 2)
+                                        {
+                                            <b>Właściciel</b>
+                                        }
+                                        else if (user.AccessLevel == 1)
+                                        {
+                                            <b>Pracownik</b>
+                                        }
+                                        else
+                                        {
+                                            <b>Użytkownik</b>
+                                        }
                                     </span>
                                 </p>
                                 @if (user.AccessLevel == 0)
                                 {
                                     <a asp-action="MakeAdmin" asp-route-id="@user.Id" class="btn btn-info">
-                                        Uczyń administratorem
+                                        Uczyń pracownikiem
                                     </a>
                                 }
-                                else
+                                else if (user.AccessLevel > 0 && user != currentUser)
                                 {
                                     <a asp-action="UnmakeAdmin" asp-route-id="@user.Id" class="btn btn-info">
                                         Uczyń użytkownikiem
                                     </a>
                                 }
-                                <a asp-action="RemoveUser" asp-route-id="@user.Id" class="btn btn-danger">
-                                    Usuń użytkownika
-                                </a>
+                                @if(user.AccessLevel != 2)
+                                {
+                                    <a asp-action="RemoveUser" asp-route-id="@user.Id" class="btn btn-danger">
+                                        Usuń użytkownika
+                                    </a>
+                                }
+
                             </div>
                         </div>
                     </div>
