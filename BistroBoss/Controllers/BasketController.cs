@@ -173,7 +173,31 @@ namespace BistroBoss.Controllers
         }
         public IActionResult ReOrder(int id)
         {
-            throw new NotImplementedException();
+            var oldOrder = _dbContext.Zamowienia
+             .Include(z => z.ZamowioneProdukty)
+             .FirstOrDefault(z => z.Id == id);
+            var newOrder = new Zamowienie
+            {
+                UzytkownikId = oldOrder.UzytkownikId,
+                Status = 1,
+                PrzewidywanyCzasRealizacji = oldOrder.PrzewidywanyCzasRealizacji,
+                CenaCalkowita = oldOrder.CenaCalkowita,
+                Ulica = oldOrder.Ulica,
+                NumerBudynku = oldOrder.NumerBudynku,
+                Miejscowosc = oldOrder.Miejscowosc,
+                KodPocztowy = oldOrder.KodPocztowy,
+                DataZamowienia = oldOrder.DataZamowienia,
+                ZamowioneProdukty = oldOrder.ZamowioneProdukty.Select(zp => new ZamowienieProdukt
+                {
+                    ProduktId = zp.ProduktId,
+                    Ilosc = zp.Ilosc,
+                    Cena = zp.Cena
+                }).ToList()
+            };
+            _dbContext.Zamowienia.Add(newOrder);
+            _dbContext.SaveChanges();
+            return RedirectToAction("ShowOrder", new { id = newOrder.Id });
+
         }
         private void SaveSessionKoszyk(KoszykSessionDto koszyk)
         {
