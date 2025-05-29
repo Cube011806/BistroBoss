@@ -83,7 +83,8 @@ namespace BistroBoss.Controllers
                 }
 
                 _dbContext.SaveChanges();
-                return RedirectToAction("Index");
+                TempData["SuccessMessage"] = "Produkt został pomyślnie dodany do koszyka!";
+                return RedirectToAction("Index","Menu");
             }
             else
             {

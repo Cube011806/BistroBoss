@@ -89,7 +89,10 @@ namespace BistroBoss.Controllers
             _dbContext.Zamowienia.Add(zamowienie);
             _dbContext.SaveChanges();
 
-            return RedirectToAction("OrderConfirmation", new { id = zamowienie.Id });
+            TempData["SuccessMessage"] = "Zamówienie zostało złożone, dziękujemy! Numer zamówienia: " + zamowienie.Id;
+            return RedirectToAction("ShowMyOrders", "Basket");
+
+            //return RedirectToAction("OrderConfirmation", new { id = zamowienie.Id });
         }
 
         private int GetUserKoszykId()
