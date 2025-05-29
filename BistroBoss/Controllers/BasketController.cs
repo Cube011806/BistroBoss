@@ -193,8 +193,18 @@ namespace BistroBoss.Controllers
 
             if (koszykProdukt != null)
             {
-                _dbContext.KoszykProdukty.Remove(koszykProdukt);
-                _dbContext.SaveChanges();
+                if(koszykProdukt.Ilosc > 1)
+                {
+                    koszykProdukt.Ilosc = koszykProdukt.Ilosc - 1;
+                    _dbContext.SaveChanges();
+                    TempData["SuccessMessage"] = "Usunięto sztukę produktu z koszyka!";
+                }
+                else
+                {
+                    _dbContext.KoszykProdukty.Remove(koszykProdukt);
+                    _dbContext.SaveChanges();
+                    TempData["SuccessMessage"] = "Usunięto produkt z koszyka!";
+                }
             }
 
             return RedirectToAction("Index");

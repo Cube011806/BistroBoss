@@ -1,5 +1,20 @@
 ﻿@model Zamowienie
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+        <strong>@TempData["ErrorMessage"]</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+        <strong>@TempData["SuccessMessage"]</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <div class="container mt-4">
     <h2 class="text-center text-white">Szczegóły zamówienia</h2>
 
@@ -42,7 +57,7 @@
         {
             <a asp-action="AddReview" asp-route-ZamowienieId="@Model.Id" class="btn btn-success text-white">Oceń zamówienie</a>
         }
-        <a asp-action="ReOrder" asp-route-id="@Model.Id" class="btn btn-info text-white">Ponownie zamów</a>
+        <a asp-action="ReOrder" asp-route-id="@Model.Id" class="btn btn-info text-white">Zamów ponownie</a>
     </div>
 
     <h3 class="text-center text-white mt-4">Zamówione produkty</h3>

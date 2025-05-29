@@ -1,5 +1,21 @@
 ﻿@model Zamowienie
 
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+        <strong>@TempData["ErrorMessage"]</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+        <strong>@TempData["SuccessMessage"]</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <div class="container mt-4">
     <h2 class="text-center text-white">Szczegóły zamówienia</h2>
 
@@ -36,17 +52,17 @@
         }
         @if(Model.Status == 1)
         {
-            <a asp-action="SetInPreparation" asp-route-id="@Model.Id" class="btn btn-success text-white">Ustaw status jako w realizacji</a>
+            <a asp-action="SetInPreparation" asp-route-id="@Model.Id" class="btn btn-success text-white">Ustaw status zamówienia jako 'W przygotowaniu'</a>
         }
         else if (Model.Status == 2)
         {
-            <a asp-action="SetInDelivery" asp-route-id="@Model.Id" class="btn btn-success text-white">Ustaw status jako w dostawie</a>
+            <a asp-action="SetInDelivery" asp-route-id="@Model.Id" class="btn btn-success text-white">Ustaw status zamówienia jako 'W dostawie'</a>
         }
         else if (Model.Status == 3)
         {
-            <a asp-action="SetCompleted" asp-route-id="@Model.Id" class="btn btn-success text-white">Ustaw status jako zrealizowano</a>
+            <a asp-action="SetCompleted" asp-route-id="@Model.Id" class="btn btn-success text-white">Ustaw status zamówienia jako 'Zrealizowane'</a>
         }
-        @if (Model.Status != 3 && Model.Status != 4)
+        @if (Model.Status != 3 && Model.Status != 4 && Model.Status != 0)
         {
             <a asp-action="SetCancelled" asp-route-id="@Model.Id" class="btn btn-danger text-white">Anuluj zamówienie</a>
         }
