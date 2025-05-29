@@ -20,7 +20,6 @@
 }
 
 <style>
-    /* ✅ Card header background and font */
     .card-header {
         background-color: #1a237e !important;
         color: white !important;
@@ -33,7 +32,6 @@
             color: white !important;
         }
 
-    /* ✅ Card body background */
     .card {
         background-color: #444444 !important;
         border: none;
@@ -46,9 +44,23 @@
         border-bottom-left-radius: 10px;
         border-bottom-right-radius: 10px;
     }
+
+    .form-label {
+        color: #f1f1f1;
+        font-weight: 600;
+    }
+
+    input.form-control,
+    select.form-select,
+    textarea.form-control {
+        background-color: white;
+        color: #212529;
+        border: 1px solid #ccc;
+        box-shadow: 0 .1rem .3rem rgba(0,0,0,.1);
+    }
 </style>
 
-<div class="container py-3 main">
+<div class="container py-3 mb-5 main">
     <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10 col-sm-12">
             <div class="card shadow-lg border-0">

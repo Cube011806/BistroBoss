@@ -20,7 +20,7 @@
         }
 
     .card-title {
-        color: #ffc107;
+        color: #ffffff; /* Changed from yellow to white */
     }
 
     .card img.img-thumbnail {
@@ -65,7 +65,7 @@
                 </div>
                 <div class="col-md-1"></div>
                 <div class="col-md-4">
-                    <h3 class="card-title fw-bold text-warning">@Model.Nazwa</h3>
+                    <h3 class="card-title fw-bold">@Model.Nazwa</h3>
                     <p class="card-text"><strong>Cena:</strong> @Model.Cena.ToString("C")</p>
                     <p class="card-text"><strong>Przewidywany czas przygotowania:</strong> @Model.CzasPrzygotowania minut</p>
                     <p class="card-text"><strong>Kategoria:</strong> @Model.Kategoria?.Nazwa</p>

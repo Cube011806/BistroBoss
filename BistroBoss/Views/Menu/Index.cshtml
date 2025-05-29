@@ -3,99 +3,99 @@
 @inject UserManager<Uzytkownik> UserManager
 @{
     var id = UserManager.GetUserId(User);
-}
-@{
     ViewData["Title"] = "Menu";
-}
-@{
     bool isMenuEmpty = !Model.Any(k => k.Produkty != null && k.Produkty.Count > 0);
 }
 
 <style>
+    .menu-section h1 {
+        color: #ffffff !important;
+    }
+
     .card {
-    background-color: #5a5a5a;
-    color: #f1f1f1;
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    padding: 1rem;
-    margin-bottom: 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+        background-color: #5a5a5a;
+        color: #f1f1f1;
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        padding: 1rem;
+        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .card-content {
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-    max-width: 800px;
-    width: 100%;
-    justify-content: center;
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+        max-width: 800px;
+        width: 100%;
+        justify-content: center;
     }
 
     .card:hover {
-    transform: none;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        transform: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     .card img.img-thumbnail {
-    background-color: transparent;
-    border: 1px solid #666;
-    width: 250px;
-    max-height: 180px;
-    object-fit: cover;
-    border-radius: 8px;
-    flex-shrink: 0;
+        background-color: transparent;
+        border: 1px solid #666;
+        width: 250px;
+        max-height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+        flex-shrink: 0;
     }
 
     .text-muted {
-    color: #f1f1f1 !important;
-    font-style: italic;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 250px;
-    max-height: 180px;
-    border: 1px solid #666;
-    border-radius: 8px;
-    flex-shrink: 0;
-    text-align: center;
-    padding: 0.5rem;
+        color: #f1f1f1 !important;
+        font-style: italic;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 250px;
+        max-height: 180px;
+        border: 1px solid #666;
+        border-radius: 8px;
+        flex-shrink: 0;
+        text-align: center;
+        padding: 0.5rem;
     }
 
     .card-body {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    max-width: 450px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        max-width: 450px;
     }
 
     .card-title {
-    color: #ffc107;
-    font-weight: bold;
-    font-size: 1.5rem;
-    margin: 0 0 0.2rem 0;
+        color: #ffffff !important;
+        font-weight: bold;
+        font-size: 1.5rem;
+        margin: 0 0 0.2rem 0;
     }
 
     .product-info p {
-    margin: 0.2rem 0;
-    font-size: 1rem;
+        margin: 0.2rem 0;
+        font-size: 1rem;
     }
 
     .btn-group {
-    display: flex;
-    justify-content: center;
-    gap: 0.75rem;
-    margin-top: 0.75rem;
-    width: auto;
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 0.75rem;
+        width: auto;
     }
 
-    .btn-group a {
-    flex: none;
-    white-space: nowrap;
-    }
+        .btn-group a {
+            flex: none;
+            white-space: nowrap;
+        }
 </style>
 
 @if (TempData["ErrorMessage"] != null)
@@ -119,52 +119,52 @@
 }
 else
 {
-    <div class="pb-5">
-    @foreach (var kategoria in Model)
-    {
-        if (kategoria.Produkty != null && kategoria.Produkty.Count > 0)
+    <div class="menu-section pb-5">
+        @foreach (var kategoria in Model)
         {
-            <h1 class="text-center fw-bold mb-4">@kategoria.Nazwa</h1>
-
-            var produktyList = kategoria.Produkty.ToList();
-            for (int i = 0; i < produktyList.Count; i++)
+            if (kategoria.Produkty != null && kategoria.Produkty.Count > 0)
             {
-                var produkt = produktyList[i];
-                bool isLast = i == produktyList.Count - 1;
+                <h1 class="text-center fw-bold mb-4">@kategoria.Nazwa</h1>
 
-                <div class="card mb-4 @(isLast ? "mb-1" : "")">
-                    <div class="card-content">
-                        @if (!string.IsNullOrEmpty(produkt.Zdjecie))
-                        {
-                            <img src="@produkt.Zdjecie" alt="Zdjęcie @produkt.Nazwa" class="img-thumbnail" />
-                        }
-                        else
-                        {
-                            <span class="text-muted">Brak zdjęcia produktu</span>
-                        }
+                var produktyList = kategoria.Produkty.ToList();
+                for (int i = 0; i < produktyList.Count; i++)
+                {
+                    var produkt = produktyList[i];
+                    bool isLast = i == produktyList.Count - 1;
 
-                        <div class="card-body">
-                            <h5 class="card-title">@produkt.Nazwa</h5>
-                            <div class="product-info">
-                                <p>Cena: <strong>@produkt.Cena.ToString("C")</strong></p>
-                                <p>Przewidywany czas przygotowania: <strong>@produkt.CzasPrzygotowania minut </strong></p>
+                    <div class="card mb-4 @(isLast ? "mb-1" : "")">
+                        <div class="card-content">
+                            @if (!string.IsNullOrEmpty(produkt.Zdjecie))
+                            {
+                                <img src="@produkt.Zdjecie" alt="Zdjęcie @produkt.Nazwa" class="img-thumbnail" />
+                            }
+                            else
+                            {
+                                <span class="text-muted">Brak zdjęcia produktu</span>
+                            }
+
+                            <div class="card-body">
+                                <h5 class="card-title">@produkt.Nazwa</h5>
+                                <div class="product-info">
+                                    <p>Cena: <strong>@produkt.Cena.ToString("C")</strong></p>
+                                    <p>Przewidywany czas przygotowania: <strong>@produkt.CzasPrzygotowania minut</strong></p>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="btn-group">
-                        <a asp-action="Details" asp-route-id="@produkt.Id" class="btn btn-primary btn-sm">Szczegóły produktu</a>
-                        <a asp-action="AddToBasket" asp-controller="Basket" asp-route-produktId="@produkt.Id" class="btn btn-primary btn-sm">Dodaj do koszyka</a>
+                        <div class="btn-group">
+                            <a asp-action="Details" asp-route-id="@produkt.Id" class="btn btn-primary btn-sm">Szczegóły produktu</a>
+                            <a asp-action="AddToBasket" asp-controller="Basket" asp-route-produktId="@produkt.Id" class="btn btn-primary btn-sm">Dodaj do koszyka</a>
 
-                        @if (User.Identity.IsAuthenticated && UserManager.FindByIdAsync(id).Result.AccessLevel == 2)
-                        {
-                            <a asp-action="Edit" asp-controller="Product" asp-route-id="@produkt.Id" class="btn btn-warning btn-sm">Edytuj produkt</a>
-                            <a asp-action="Delete" asp-controller="Product" asp-route-id="@produkt.Id" class="btn btn-danger btn-sm">Usuń produkt</a>
-                        }
+                            @if (User.Identity.IsAuthenticated && UserManager.FindByIdAsync(id).Result.AccessLevel == 2)
+                            {
+                                <a asp-action="Edit" asp-controller="Product" asp-route-id="@produkt.Id" class="btn btn-warning btn-sm">Edytuj produkt</a>
+                                <a asp-action="Delete" asp-controller="Product" asp-route-id="@produkt.Id" class="btn btn-danger btn-sm">Usuń produkt</a>
+                            }
+                        </div>
                     </div>
-                </div>
+                }
             }
         }
-    }
-</div>
+    </div>
 }
