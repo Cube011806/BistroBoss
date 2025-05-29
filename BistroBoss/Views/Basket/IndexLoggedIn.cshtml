@@ -35,7 +35,7 @@
     }
 
         table.table thead {
-            background-color: #495057;
+            background-color: #343a40;
             color: #ffc107;
         }
 
@@ -81,10 +81,10 @@
     <div class="row justify-content-center">
         <div class="col-lg-10 col-md-12">
             <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center">
+                <div class="card-header text-white text-center">
                     <h3 class="mb-0">Twój Koszyk</h3>
                 </div>
-                <div class="card-body text-dark bg-white">
+                <div class="card-body">
 
                     @if (!Model.KoszykProdukty.Any())
                     {
@@ -92,8 +92,8 @@
                     }
                     else
                     {
-                        <table class="table table-bordered align-middle">
-                            <thead class="table-light">
+                        <table class="table table-bordered table-striped">
+                            <thead class="bg-dark text-white">
                                 <tr>
                                     <th>Produkt</th>
                                     <th>Ilość</th>
@@ -106,11 +106,11 @@
                                 @foreach (var item in Model.KoszykProdukty)
                                 {
                                     <tr>
-                                        <td>@item.Produkt.Nazwa</td>
-                                        <td>@item.Ilosc</td>
-                                        <td>@item.Produkt.Cena.ToString("c")</td>
-                                        <td>@(item.Produkt.Cena * item.Ilosc) zł</td>
-                                        <td>
+                                        <td class="text-white bg-secondary">@item.Produkt.Nazwa</td>
+                                        <td class="text-white bg-secondary">@item.Ilosc</td>
+                                        <td class="text-white bg-secondary">@item.Produkt.Cena.ToString("c")</td>
+                                        <td class="text-white bg-secondary">@(item.Produkt.Cena * item.Ilosc) zł</td>
+                                        <td class="text-white bg-secondary">
                                             <form asp-action="RemoveFromBasket" asp-route-id="@item.Id" method="post">
                                                 <button class="btn btn-danger btn-sm">Usuń produkt</button>
                                             </form>

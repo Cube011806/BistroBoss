@@ -133,24 +133,28 @@ namespace BistroBoss.Controllers
         }
         public IActionResult AddReview(int ZamowienieId)
         {
-            ViewBag.ZamowienieId = ZamowienieId;
-            return View();
+            var model = new Opinia
+            {
+                ZamowienieId = ZamowienieId,
+                Ocena = 1
+            };
+            return View(model);
         }
+
         [HttpPost]
         public IActionResult AddReview(Opinia opinia)
         {
-            //if (ModelState.IsValid)
-            //{
-                opinia.UzytkownikId = _userManager.GetUserId(User);
-                _dbContext.Opinie.Add(opinia);
-                var zamowienie = _dbContext.Zamowienia.Include(z=>z.Opinia).FirstOrDefault(z=> z.Id ==opinia.ZamowienieId);
-                zamowienie.Opinia = opinia;
-                _dbContext.SaveChanges();
+            opinia.UzytkownikId = _userManager.GetUserId(User);
+            _dbContext.Opinie.Add(opinia);
 
-                return RedirectToAction("ShowOrder", new { id = opinia.ZamowienieId });
-            //}
-            //return View(opinia);
+            var zamowienie = _dbContext.Zamowienia.Include(z => z.Opinia).FirstOrDefault(z => z.Id == opinia.ZamowienieId);
+            zamowienie.Opinia = opinia;
+
+            _dbContext.SaveChanges();
+
+            return RedirectToAction("ShowOrder", new { id = opinia.ZamowienieId });
         }
+
 
         public IActionResult CancelOrder(int id)
         {
