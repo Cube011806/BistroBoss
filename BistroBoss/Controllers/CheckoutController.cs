@@ -18,7 +18,26 @@ namespace BistroBoss.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            Zamowienie zamowienie = new Zamowienie();
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = _userManager.GetUserId(User);
+                var user = _dbContext.Uzytkownicy.FirstOrDefault(u => u.Id == userId);
+
+                if (user != null)
+                {
+                    zamowienie.Uzytkownik = new Uzytkownik
+                    {
+                        Imie = user.Imie,
+                        Nazwisko = user.Nazwisko,
+                        Email = user.Email,
+                        PhoneNumber = user.PhoneNumber
+                    };
+                }
+            }
+
+            return View(zamowienie);
         }
         [HttpPost]
         public IActionResult SubmitOrder(Zamowienie zamowienie, Uzytkownik uzytkownik, bool deliveryMethod)
@@ -43,14 +62,20 @@ namespace BistroBoss.Controllers
                 }
             }
             zamowienie.DataZamowienia = DateTime.Now;
+            //deliveryMethod - true = dostawa, false = odbiór osobisty
             if (!deliveryMethod)
             {
                 zamowienie.Miejscowosc = "";
                 zamowienie.Ulica = "";
                 zamowienie.NumerBudynku = "";
                 zamowienie.KodPocztowy = "";
+                zamowienie.SposobDostawy = false;
             }
-            var userId = "";
+            else
+            {
+                zamowienie.SposobDostawy = true;
+            }
+                var userId = "";
             if (User.Identity.IsAuthenticated)
             {
                 zamowienie.UzytkownikId = _userManager.GetUserId(User);
