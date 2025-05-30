@@ -77,11 +77,11 @@
                         <div class="col-12 mb-3">
                             <label class="form-label mb-2">Metoda dostawy</label>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="SposobDostawy" value="true" id="radioDelivery" checked />
+                                <input class="form-check-input" type="radio" name="deliveryMethod" value="true" id="radioDelivery" checked />
                                 <label class="form-check-label" for="radioDelivery">Dostawa</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="SposobDostawy" value="false" id="radioPickup" />
+                                <input class="form-check-input" type="radio" name="deliveryMethod" value="false" id="radioPickup" />
                                 <label class="form-check-label" for="radioPickup">Odbiór osobisty</label>
                             </div>
                         </div>
@@ -90,23 +90,23 @@
                         <div id="userFields">
                             <div class="col-12 mb-3">
                                 <label class="form-label mb-2">Imię</label>
-                                <input asp-for="Uzytkownik.Imie" class="form-control shadow-sm" />
-                                <span asp-validation-for="Uzytkownik.Imie" class="text-danger"></span>
+                                <input asp-for="Imie" class="form-control shadow-sm" />
+                                <span asp-validation-for="Imie" class="text-danger"></span>
                             </div>
                             <div class="col-12 mb-3">
                                 <label class="form-label mb-2">Nazwisko</label>
-                                <input asp-for="Uzytkownik.Nazwisko" class="form-control shadow-sm" />
-                                <span asp-validation-for="Uzytkownik.Nazwisko" class="text-danger"></span>
+                                <input asp-for="Nazwisko" class="form-control shadow-sm" />
+                                <span asp-validation-for="Nazwisko" class="text-danger"></span>
                             </div>
                             <div class="col-12 mb-3">
                                 <label class="form-label mb-2">Email</label>
-                                <input asp-for="Uzytkownik.Email" type="email" class="form-control shadow-sm" />
-                                <span asp-validation-for="Uzytkownik.Email" class="text-danger"></span>
+                                <input asp-for="Email" type="email" class="form-control shadow-sm" value="@Model.Uzytkownik.Email" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
                             <div class="col-12 mb-3">
                                 <label class="form-label mb-2">Numer telefonu</label>
-                                <input asp-for="Uzytkownik.PhoneNumber" type="tel" class="form-control shadow-sm" />
-                                <span asp-validation-for="Uzytkownik.PhoneNumber" class="text-danger"></span>
+                                <input asp-for="NumerTelefonu" type="tel" class="form-control shadow-sm" value="@Model.Uzytkownik.PhoneNumber" />
+                                <span asp-validation-for="NumerTelefonu" class="text-danger"></span>
                             </div>
                         </div>
 

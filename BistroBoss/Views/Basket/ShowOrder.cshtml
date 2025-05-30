@@ -63,13 +63,17 @@
             <h3>Szczegóły zamówienia</h3>
         </div>
         <div class="card-body">
+            <p><strong>Numer zamówienia:</strong> @Model.Id</p>
+            <p><strong>Imię i nazwisko: </strong> @Model.Imie @Model.Nazwisko</p>
+            <p><strong>Adres email:</strong> @Model.Email</p>
+            <p><strong>Numer telefonu:</strong> @Model.NumerTelefonu</p>
             <p><strong>Data zamówienia:</strong> @Model.DataZamowienia.ToString("dd-MM-yyyy HH:mm")</p>
-            <p><strong>Adres dostawy:</strong> @Model.Ulica @Model.NumerBudynku, @Model.KodPocztowy @Model.Miejscowosc</p>
             <p><strong>Przewidywany czas realizacji:</strong> @Model.PrzewidywanyCzasRealizacji min</p>
             <p><strong>Cena całkowita:</strong> @Model.CenaCalkowita.ToString("C")</p>
             @if(Model.SposobDostawy)
             {
                 <p><strong>Sposób dostawy:</strong> Dostawa</p>
+                <p><strong>Adres dostawy:</strong> @Model.Ulica @Model.NumerBudynku, @Model.KodPocztowy @Model.Miejscowosc</p>
             }
             else
             {
@@ -117,7 +121,10 @@
             {
                 <a asp-action="AddReview" asp-route-ZamowienieId="@Model.Id" class="btn btn-success text-white">Oceń zamówienie</a>
             }
-            <a asp-action="ReOrder" asp-route-id="@Model.Id" class="btn btn-info text-white">Zamów ponownie</a>
+            @if (Model.Status == 4)
+            {
+                <a asp-action="ReOrder" asp-route-id="@Model.Id" class="btn btn-info text-white">Zamów ponownie</a>
+            }
         </div>
     </div>
 

@@ -178,6 +178,13 @@ namespace BistroBoss.Controllers
         }
         public IActionResult ReOrder(int id)
         {
+            var userId = _userManager.GetUserId(User);
+            var czyMaAktualneZamowienie = _dbContext.Zamowienia.Where(z => z.UzytkownikId == userId).Any(z => z.Status != 4);
+            if(czyMaAktualneZamowienie)
+            {
+                TempData["ErrorMessage"] = "Żeby ponownie coś zamówić, nie możesz mieć zamówienia aktualnie w realizacji!";
+                return RedirectToAction("ShowOrder", new { id });
+            }
             var oldOrder = _dbContext.Zamowienia
              .Include(z => z.ZamowioneProdukty)
              .FirstOrDefault(z => z.Id == id);

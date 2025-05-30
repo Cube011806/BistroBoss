@@ -3,6 +3,7 @@ using BistroBoss.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Linq;
 
@@ -42,7 +43,24 @@ namespace BistroBoss.Controllers
         [HttpPost]
         public IActionResult SubmitOrder(Zamowienie zamowienie, Uzytkownik uzytkownik, bool deliveryMethod)
         {
-            var koszyk = _dbContext.Koszyki.Include(k=>k.KoszykProdukty).FirstOrDefault(k => k.UzytkownikId == _userManager.GetUserId(User));
+            if(zamowienie.SposobDostawy)
+            {
+                if (zamowienie.Imie.IsNullOrEmpty() || zamowienie.Nazwisko.IsNullOrEmpty() || zamowienie.Email.IsNullOrEmpty() || zamowienie.NumerTelefonu.IsNullOrEmpty() ||
+                zamowienie.Miejscowosc.IsNullOrEmpty() || zamowienie.Ulica.IsNullOrEmpty() || zamowienie.NumerBudynku.IsNullOrEmpty() || zamowienie.KodPocztowy.IsNullOrEmpty())
+                {
+                    TempData["ErrorMessage"] = "Wszystkie pola muszą zostać wypełnione!";
+                    return RedirectToAction("Index");
+                }
+            }
+            else
+            {
+                if (zamowienie.Imie.IsNullOrEmpty() || zamowienie.Nazwisko.IsNullOrEmpty() || zamowienie.Email.IsNullOrEmpty() || zamowienie.NumerTelefonu.IsNullOrEmpty())
+                {
+                    TempData["ErrorMessage"] = "Wszystkie pola muszą zostać wypełnione!";
+                    return RedirectToAction("Index");
+                }
+            }
+            var koszyk = _dbContext.Koszyki.Include(k => k.KoszykProdukty).FirstOrDefault(k => k.UzytkownikId == _userManager.GetUserId(User));
             float cenaCalkowita = 0;
             foreach(var item in koszyk.KoszykProdukty)
             {
