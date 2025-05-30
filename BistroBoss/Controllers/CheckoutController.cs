@@ -3,6 +3,7 @@ using BistroBoss.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Linq;
 
@@ -20,12 +21,48 @@ namespace BistroBoss.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            Zamowienie zamowienie = new Zamowienie();
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = _userManager.GetUserId(User);
+                var user = _dbContext.Uzytkownicy.FirstOrDefault(u => u.Id == userId);
+
+                if (user != null)
+                {
+                    zamowienie.Uzytkownik = new Uzytkownik
+                    {
+                        Imie = user.Imie,
+                        Nazwisko = user.Nazwisko,
+                        Email = user.Email,
+                        PhoneNumber = user.PhoneNumber
+                    };
+                }
+            }
+
+            return View(zamowienie);
         }
         [HttpPost]
         public IActionResult SubmitOrder(Zamowienie zamowienie, Uzytkownik uzytkownik, bool deliveryMethod)
         {
-            var koszyk = _dbContext.Koszyki.Include(k=>k.KoszykProdukty).FirstOrDefault(k => k.UzytkownikId == _userManager.GetUserId(User));
+            if(zamowienie.SposobDostawy)
+            {
+                if (zamowienie.Imie.IsNullOrEmpty() || zamowienie.Nazwisko.IsNullOrEmpty() || zamowienie.Email.IsNullOrEmpty() || zamowienie.NumerTelefonu.IsNullOrEmpty() ||
+                zamowienie.Miejscowosc.IsNullOrEmpty() || zamowienie.Ulica.IsNullOrEmpty() || zamowienie.NumerBudynku.IsNullOrEmpty() || zamowienie.KodPocztowy.IsNullOrEmpty())
+                {
+                    TempData["ErrorMessage"] = "Wszystkie pola muszą zostać wypełnione!";
+                    return RedirectToAction("Index");
+                }
+            }
+            else
+            {
+                if (zamowienie.Imie.IsNullOrEmpty() || zamowienie.Nazwisko.IsNullOrEmpty() || zamowienie.Email.IsNullOrEmpty() || zamowienie.NumerTelefonu.IsNullOrEmpty())
+                {
+                    TempData["ErrorMessage"] = "Wszystkie pola muszą zostać wypełnione!";
+                    return RedirectToAction("Index");
+                }
+            }
+            var koszyk = _dbContext.Koszyki.Include(k => k.KoszykProdukty).FirstOrDefault(k => k.UzytkownikId == _userManager.GetUserId(User));
             float cenaCalkowita = 0;
             foreach(var item in koszyk.KoszykProdukty)
             {
@@ -45,14 +82,20 @@ namespace BistroBoss.Controllers
                 }
             }
             zamowienie.DataZamowienia = DateTime.Now;
+            //deliveryMethod - true = dostawa, false = odbiór osobisty
             if (!deliveryMethod)
             {
                 zamowienie.Miejscowosc = "";
                 zamowienie.Ulica = "";
                 zamowienie.NumerBudynku = "";
                 zamowienie.KodPocztowy = "";
+                zamowienie.SposobDostawy = false;
             }
-            var userId = "";
+            else
+            {
+                zamowienie.SposobDostawy = true;
+            }
+                var userId = "";
             if (User.Identity.IsAuthenticated)
             {
                 zamowienie.UzytkownikId = _userManager.GetUserId(User);
