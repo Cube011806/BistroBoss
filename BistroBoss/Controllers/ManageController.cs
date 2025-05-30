@@ -9,10 +9,12 @@ namespace BistroBoss.Controllers
     public class ManageController : BaseController
     {
         private readonly UserManager<Uzytkownik> _userManager;
+        private readonly IEmailService _emailService;
 
-        public ManageController(ApplicationDbContext dbContext, UserManager<Uzytkownik> userManager) : base(dbContext)
+        public ManageController(ApplicationDbContext dbContext, UserManager<Uzytkownik> userManager, IEmailService emailService) : base(dbContext)
         {
             _userManager = userManager;
+            _emailService = emailService;
         }
         public IActionResult Index()
         {
@@ -93,6 +95,25 @@ namespace BistroBoss.Controllers
                 return NotFound();
             }
             zamowienie.Status = 3;
+            var user = _dbContext.Uzytkownicy.FirstOrDefault(u => u.Id == zamowienie.UzytkownikId);
+            string message = $@"
+            <html>
+                <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
+                    <h2 style='color: #2196F3;'>Twoje zamówienie jest w drodze!</h2>
+                    <p><strong>Numer zamówienia:</strong> {zamowienie.Id}</p>
+                    <p><strong>Data zamówienia:</strong> {zamowienie.DataZamowienia:dd.MM.yyyy HH:mm}</p>
+                    <p><strong>Cena całkowita:</strong> {zamowienie.CenaCalkowita} zł</p>
+                    <p>
+                        <strong>Adres dostawy:</strong><br />
+                        {zamowienie.Miejscowosc}, {zamowienie.Ulica} {zamowienie.NumerBudynku}<br />
+                        {zamowienie.KodPocztowy}
+                    </p>
+                    <hr style='margin: 20px 0;' />
+                    <p>Oczekuj dostawcy. Twój posiłek niedługo dotrze na miejsce.</p>
+                    <p style='color: #777;'>Dziękujemy za zaufanie!<br />Zespół BistroBoss</p>
+                </body>
+            </html>";
+            _emailService.SendEmail(user.Email, "Zamówienie w drodze", message);
             _dbContext.SaveChanges();
             return RedirectToAction("ShowOrder", "Manage", new { id });
         }

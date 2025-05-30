@@ -155,9 +155,12 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Basket" asp-action="Index">Koszyk</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Basket" asp-action="ShowMyOrders">Moje zamówienia</a>
-                            </li>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Basket" asp-action="ShowMyOrders">Moje zamówienia</a>
+                                </li>
+                            }
                             @if (User.Identity.IsAuthenticated && UserManager.FindByIdAsync(id).Result.AccessLevel > 0)
                             {
                                 <li class="nav-item">
