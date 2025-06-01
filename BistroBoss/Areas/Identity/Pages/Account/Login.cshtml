@@ -33,7 +33,7 @@
     }
 
     .form-label {
-        color: white !important;
+        color: black !important;
     }
 </style>
 
@@ -48,20 +48,20 @@
                     <form id="account" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
-                        <div class="form-floating mb-3">
-                            <input asp-for="Input.Email" class="form-control shadow-sm" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                            <label asp-for="Input.Email" class="form-label">Email</label>
+                        <div class="form-floating mb-3 text-black">
+                            <input asp-for="Input.Email" class="form-control shadow-sm text-black" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                            <label asp-for="Input.Email" class="form-label text-black">Email</label>
                             <span asp-validation-for="Input.Email" class="text-danger"></span>
                         </div>
 
-                        <div class="form-floating mb-3">
-                            <input asp-for="Input.Password" class="form-control shadow-sm" autocomplete="current-password" aria-required="true" placeholder="Hasło" />
-                            <label asp-for="Input.Password" class="form-label">Hasło</label>
+                        <div class="form-floating mb-3 text-black">
+                            <input asp-for="Input.Password" class="form-control shadow-sm text-black" autocomplete="current-password" aria-required="true" placeholder="Hasło" />
+                            <label asp-for="Input.Password" class="form-label text-black">Hasło</label>
                             <span asp-validation-for="Input.Password" class="text-danger"></span>
                         </div>
 
                         <div class="checkbox mb-3">
-                            <label asp-for="Input.RememberMe" class="form-label">
+                            <label asp-for="Input.RememberMe" style="form-label: white">
                                 <input class="form-check-input" asp-for="Input.RememberMe" />
                                 @Html.DisplayNameFor(m => m.Input.RememberMe)
                             </label>
