@@ -12,7 +12,7 @@ namespace BistroBoss.Models
         public float CenaCalkowita { get; set; }
         public int PrzewidywanyCzasRealizacji { get; set; }
         //public int StatusId { get; set; }
-        public int Status { get; set; } = 0; // 1 -złożono 2- w przygotowaniu 3 - w dostawie 4 - zrealizowano 3 - gotowe do odbioru
+        public int Status { get; set; } = 0; // 1 -złożono 2- w przygotowaniu 3 - w dostawie 4 - zrealizowano 3 - gotowe do odbioru 0 - anulowane
                                              //public virtual Status Status { get; set; } = null!;
 
         [MaxLength(50)]
