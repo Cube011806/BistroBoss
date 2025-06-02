@@ -16,27 +16,27 @@
 
     /* Card header */
     .card-header {
-        background-color: #1a237e !important; /* deep indigo */
+        background-color: #283593 !important; /* slightly lighter dark blue */
         color: white !important;
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
     }
 
-        /* Override h3 inside card-header */
+        /* Override specifically for h3 inside card-header to beat layout's gold */
         .card-header h3 {
             color: white !important;
         }
 
     /* Card body */
     .card-body {
-        background-color: #444444 !important;
+        background-color: #444444 !important; /* dark gray */
         color: #f1f1f1 !important;
         padding: 1.5rem;
         border-bottom-left-radius: 10px;
         border-bottom-right-radius: 10px;
     }
 
-    /* Table styling */
+    /* Table styles remain as is or tweak if you want */
     table.table {
         color: #f1f1f1;
         background-color: #6c757d;
@@ -54,6 +54,7 @@
             border-color: #444;
         }
 
+    /* Buttons */
     .btn-danger {
         min-width: 70px;
         font-weight: 600;
@@ -64,6 +65,7 @@
         font-weight: 600;
     }
 
+    /* Centered paragraph style */
     p.text-center {
         font-style: italic;
         font-size: 1.2rem;
@@ -101,11 +103,13 @@
                     }
                     else
                     {
-                        <table class="table table-bordered align-middle mb-0">
-                            <thead>
+                        <table class="table table-bordered table-striped">
+                            <thead class="bg-dark text-white">
                                 <tr>
                                     <th>Produkt</th>
                                     <th>Ilość</th>
+                                    <th>Cena jednostkowa</th>
+                                    <th>Łącznie</th>
                                     <th>Akcje</th>
                                 </tr>
                             </thead>
@@ -115,8 +119,10 @@
                                     <tr>
                                         <td class="text-white bg-secondary">@item.Nazwa</td>
                                         <td class="text-white bg-secondary">@item.Ilosc</td>
+                                        <td class="text-white bg-secondary">@item.Cena.ToString("c")</td>
+                                        <td class="text-white bg-secondary">@(item.Cena * item.Ilosc) zł</td>
                                         <td class="text-white bg-secondary">
-                                            <form asp-action="RemoveFromSessionBasket" asp-route-id="@item.ProduktId" method="post">
+                                            <form asp-action="RemoveFromBasket" asp-route-id="@item.ProduktId" method="post">
                                                 <button class="btn btn-danger btn-sm">Usuń produkt</button>
                                             </form>
                                         </td>
@@ -124,6 +130,10 @@
                                 }
                             </tbody>
                         </table>
+
+                        <div class="text-end mt-3">
+                            <h5><strong>Łączna cena: @Model.Produkty.Sum(p => p.Cena * p.Ilosc).ToString("c")</strong></h5>
+                        </div>
                         <div class="text-end mt-3">
                             <a asp-controller="Checkout" asp-action="Index" class="btn btn-success">
                                 Złóż zamówienie

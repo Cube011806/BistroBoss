@@ -108,7 +108,8 @@ namespace BistroBoss.Controllers
                 }
 
                 SaveSessionKoszyk(koszyk);
-                return RedirectToAction("Index");
+                TempData["SuccessMessage"] = "Produkt został pomyślnie dodany do koszyka!";
+                return RedirectToAction("Index", "Menu");
             }
         }
         public IActionResult ShowMyOrders()
@@ -157,7 +158,7 @@ namespace BistroBoss.Controllers
             zamowienie.Opinia = opinia;
 
             _dbContext.SaveChanges();
-
+            TempData["SuccessMessage"] = "Pomyślnie dodano opinię!";
             return RedirectToAction("ShowOrder", new { id = opinia.ZamowienieId });
         }
 
@@ -171,6 +172,7 @@ namespace BistroBoss.Controllers
             }
             zamowienie.Status = 0;
             _dbContext.SaveChanges();
+            TempData["SuccessMessage"] = "Pomyślnie anulowano zamówienie!";
             return RedirectToAction("ShowOrder", "Basket", new { id });
         }
         private KoszykSessionDto GetSessionKoszyk()
@@ -265,6 +267,18 @@ namespace BistroBoss.Controllers
             var produkt = koszyk.Produkty.FirstOrDefault(p => p.ProduktId == id);
             if (produkt != null)
             {
+                if (produkt.Ilosc > 1)
+                {
+                    produkt.Ilosc = produkt.Ilosc - 1;
+                    _dbContext.SaveChanges();
+                    TempData["SuccessMessage"] = "Usunięto sztukę produktu z koszyka!";
+                }
+                else
+                {
+                    koszyk.Produkty.Remove(produkt);
+                    _dbContext.SaveChanges();
+                    TempData["SuccessMessage"] = "Usunięto produkt z koszyka!";
+                }
                 koszyk.Produkty.Remove(produkt);
                 SaveSessionKoszyk(koszyk); 
             }

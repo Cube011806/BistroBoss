@@ -264,7 +264,7 @@ namespace BistroBoss.Controllers
                 }
             }
 
-            TempData["SuccessMessage"] = "Pomyślnie usunięto produkt z menu!";
+            TempData["SuccessMessage"] = "Produkt został pomyślnie usunięty!";
             return RedirectToAction("Index", "Menu");
         }
     }

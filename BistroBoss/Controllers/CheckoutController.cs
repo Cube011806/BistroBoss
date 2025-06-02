@@ -176,10 +176,5 @@ namespace BistroBoss.Controllers
         }
 
 
-        public IActionResult OrderConfirmation(int id)
-        {
-            ViewBag.OrderId = id;
-            return View();
-        }
     }
 }

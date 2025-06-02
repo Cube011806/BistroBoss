@@ -45,6 +45,7 @@ namespace BistroBoss.Controllers
             }
             zamowienie.Status = 0;
             _dbContext.SaveChanges();
+            TempData["SuccessMessage"] = "Pomyślnie anulowano zamówienie!";
             return RedirectToAction("ShowOrder", "Manage", new { id });
         }
         public IActionResult ShowUsers()
@@ -58,6 +59,7 @@ namespace BistroBoss.Controllers
             user.AccessLevel = 1;
             _dbContext.Uzytkownicy.Update(user);
             _dbContext.SaveChanges();
+            TempData["SuccessMessage"] = "Pomyślnie zmieniono rangę użytkownika!";
             return RedirectToAction("ShowUsers");
         }
 
@@ -67,6 +69,7 @@ namespace BistroBoss.Controllers
             user.AccessLevel = 0;
             _dbContext.Uzytkownicy.Update(user);
             _dbContext.SaveChanges();
+            TempData["SuccessMessage"] = "Pomyślnie zmieniono rangę użytkownika!";
             return RedirectToAction("ShowUsers");
         }
         public IActionResult RemoveUser(string id)
@@ -74,6 +77,7 @@ namespace BistroBoss.Controllers
             var user = _dbContext.Users.Find(id);
             _dbContext.Users.Remove(user);
             _dbContext.SaveChanges();
+            TempData["SuccessMessage"] = "Pomyślnie usunięto użytkownika!";
             return RedirectToAction("ShowUsers");
         }
         public IActionResult SetInPreparation(int id)
@@ -85,6 +89,7 @@ namespace BistroBoss.Controllers
             }
             zamowienie.Status = 2;
             _dbContext.SaveChanges();
+            TempData["SuccessMessage"] = "Pomyślnie zmieniono status zamówienia na 'W przygotowaniu'!";
             return RedirectToAction("ShowOrder", "Manage", new { id });
         }
         public IActionResult SetInDelivery(int id)
@@ -115,6 +120,14 @@ namespace BistroBoss.Controllers
             </html>";
             _emailService.SendEmail(user.Email, "Zamówienie w drodze", message);
             _dbContext.SaveChanges();
+            if(zamowienie.SposobDostawy)
+            {
+                TempData["SuccessMessage"] = "Pomyślnie zmieniono status zamówienia na 'W dostawie'!";
+            }
+            else
+            {
+                TempData["SuccessMessage"] = "Pomyślnie zmieniono status zamówienia na 'Gotowe do odbioru'!";
+            }
             return RedirectToAction("ShowOrder", "Manage", new { id });
         }
         public IActionResult SetCompleted(int id)
@@ -126,6 +139,7 @@ namespace BistroBoss.Controllers
             }
             zamowienie.Status = 4;
             _dbContext.SaveChanges();
+            TempData["SuccessMessage"] = "Pomyślnie zmieniono status zamówienia na 'Zrealizowane'!";
             return RedirectToAction("ShowOrder", "Manage", new { id });
         }
         public IActionResult DeleteOrder(int id)
@@ -135,6 +149,7 @@ namespace BistroBoss.Controllers
             {
                 _dbContext.Zamowienia.Remove(zamowienie);
                 _dbContext.SaveChanges();
+                TempData["SuccessMessage"] = "Pomyślnie usunięto zamówienie!";
             }
             return RedirectToAction("ShowAllOrders");
         }
