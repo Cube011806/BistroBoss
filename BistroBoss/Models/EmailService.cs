@@ -35,8 +35,5 @@
             smtp.Disconnect(true);
             
         }
-        
     }
-
-
 }

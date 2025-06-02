@@ -32,6 +32,7 @@ namespace BistroBoss.Controllers
                 }
                 else
                 {
+                    ViewBag.ShowArchiwalne = (zamowienie.Status == 0 || zamowienie.Status == 4);
                     var zamowienia = _dbContext.Zamowienia.Where(z => z.Id == zamowienie.Id).ToList();
                     return View(zamowienia);
                 }
