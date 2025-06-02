@@ -20,10 +20,27 @@ namespace BistroBoss.Controllers
         {
             return View();
         }
-        public IActionResult ShowAllOrders()
+        public IActionResult ShowAllOrders(int? KwerendaWyszukujaca)
         {
-            var zamowienia = _dbContext.Zamowienia.ToList();
-            return View(zamowienia);
+            if(KwerendaWyszukujaca.HasValue)
+            {
+                var zamowienie = _dbContext.Zamowienia.FirstOrDefault(z => z.Id == KwerendaWyszukujaca);
+                if(zamowienie == null)
+                {
+                    TempData["ErrorMessage"] = "Nie udało się odnaleźć zamówienia o takim identyfikatorze!";
+                    return RedirectToAction("ShowAllOrders");
+                }
+                else
+                {
+                    var zamowienia = _dbContext.Zamowienia.Where(z => z.Id == zamowienie.Id).ToList();
+                    return View(zamowienia);
+                }
+            }
+            else
+            {
+                var zamowienia = _dbContext.Zamowienia.ToList();
+                return View(zamowienia);
+            }
         }
         public IActionResult ShowOrder(int id)
         {
