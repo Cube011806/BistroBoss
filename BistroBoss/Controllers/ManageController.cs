@@ -38,7 +38,7 @@ namespace BistroBoss.Controllers
             }
             else
             {
-                var zamowienia = _dbContext.Zamowienia.ToList();
+                var zamowienia = _dbContext.Zamowienia.OrderBy(z=>z.Status).ToList();
                 return View(zamowienia);
             }
         }
@@ -135,7 +135,27 @@ namespace BistroBoss.Controllers
                     <p style='color: #777;'>Dziękujemy za zaufanie!<br />Zespół BistroBoss</p>
                 </body>
             </html>";
-            _emailService.SendEmail(user.Email, "Zamówienie w drodze", message);
+            string message2 = $@"
+            <html>
+                <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
+                    <h2 style='color: #2196F3;'>Twoje zamówienie jest gotowe do odbioru!</h2>
+                    <p><strong>Numer zamówienia:</strong> {zamowienie.Id}</p>
+                    <p><strong>Data zamówienia:</strong> {zamowienie.DataZamowienia:dd.MM.yyyy HH:mm}</p>
+                    <p><strong>Cena całkowita:</strong> {zamowienie.CenaCalkowita} zł</p>
+                    <hr style='margin: 20px 0;' />
+                    <p><b>Zapraszamy po odbiór do naszego lokalu na ul. Dąbrowskiego 73 Częstochowa</b></p>
+                    <p style='color: #777;'>Dziękujemy za zaufanie!<br />Zespół BistroBoss</p>
+                </body>
+            </html>";
+            if (!zamowienie.SposobDostawy)
+            {
+                _emailService.SendEmail(user.Email, "Zamówienie gotowe do odbioru", message2);
+            }
+            else
+            {
+                _emailService.SendEmail(user.Email, "Zamówienie w drodze", message);
+            }
+            
             _dbContext.SaveChanges();
             if(zamowienie.SposobDostawy)
             {

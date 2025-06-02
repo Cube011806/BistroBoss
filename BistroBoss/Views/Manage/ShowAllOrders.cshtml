@@ -68,35 +68,15 @@
 
 @if (Model.Count != 0)
 {
-    <div class="search-bar" style="padding: 20px; border-bottom: 1px solid #ccc; margin-bottom: 20px;">
-        <form asp-controller="Manage" asp-action="ShowAllOrders" method="get" class="search-form">
+    <div class="search-bar">
+        <form asp-controller="Manage" asp-action="ShowAllOrders" method="get">
             <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                <input type="number"
-                       name="KwerendaWyszukujaca"
-                       placeholder="Wyszukaj zamówienie po identyfikatorze"
-                       min="1"
-                       class="form-control search-input"
-                       style="
-                               width: 450px;
-                               padding: 10px;
-                               font-size: 16px;
-                               border: 1px solid #ccc;
-                               border-radius: 25px;
-                               box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);" />
-                <button type="submit"
-                        class="btn btn-primary search-button"
-                        style="
-                                padding: 10px 20px;
-                                font-size: 16px;
-                                border-radius: 25px;
-                                background-color: #007bff;
-                                border: none;
-                                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-                    Szukaj
-                </button>
+                <input type="number" name="KwerendaWyszukujaca" placeholder="Wyszukaj zamówienie po Id" min="1" class="form-control search-input" />
+                <button type="submit" class="btn btn-primary search-button">Szukaj</button>
             </div>
         </form>
     </div>
+
     <div class="table-container mb-5">
         <table class="table table-bordered table-striped">
             <thead class="bg-dark text-white">
@@ -104,16 +84,84 @@
                     <th>ID</th>
                     <th>Wartość zamówienia</th>
                     <th>Data zamówienia</th>
+                    <th>Status</th>
                     <th>Akcje</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var zamowienie in Model)
+                @foreach (var zamowienie in Model.Where(z => z.Status != 0 && z.Status != 4))
                 {
                     <tr>
                         <td class="text-white bg-secondary">@zamowienie.Id</td>
                         <td class="text-white bg-secondary">@zamowienie.CenaCalkowita.ToString("C")</td>
                         <td class="text-white bg-secondary">@zamowienie.DataZamowienia.ToString("dd-MM-yyyy HH:mm")</td>
+                        <td class="text-white bg-secondary">
+                            @if (zamowienie.SposobDostawy)
+                            {
+                                if (zamowienie.Status == 1)
+                                {
+                                    <p>Złożone</p>
+                                }
+                                else if (zamowienie.Status == 2)
+                                {
+                                    <p>W realizacji</p>
+                                }
+                                else if (zamowienie.Status == 3)
+                                {
+                                    <p>Gotowe do odbioru</p>
+                                }
+                            }
+                            else
+                            {
+                                if (zamowienie.Status == 1)
+                                {
+                                    <p>Złożone</p>
+                                }
+                                else if (zamowienie.Status == 2)
+                                {
+                                    <p>W realizacji</p>
+                                }
+                                else if (zamowienie.Status == 3)
+                                {
+                                    <p>W dostawie</p>
+                                }
+                            }
+                        </td>
+                        <td class="text-white bg-secondary">
+                            <a asp-action="ShowOrder" asp-route-id="@zamowienie.Id" class="btn btn-info text-white">Zarządzaj</a>
+                            <a asp-action="DeleteOrder" asp-route-id="@zamowienie.Id" class="btn btn-danger text-white">Usuń</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#archiwalneZamowienia">
+        Pokaż zamówienia archiwalne
+    </button>
+
+    <div id="archiwalneZamowienia" class="collapse">
+        <table class="table table-bordered table-striped mt-3">
+            <thead class="bg-dark text-white">
+                <tr>
+                    <th>ID</th>
+                    <th>Wartość zamówienia</th>
+                    <th>Data zamówienia</th>
+                    <th>Status</th>
+                    <th>Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var zamowienie in Model.Where(z => z.Status == 0 || z.Status == 4))
+                {
+                    <tr>
+                        <td class="text-white bg-secondary">@zamowienie.Id</td>
+                        <td class="text-white bg-secondary">@zamowienie.CenaCalkowita.ToString("C")</td>
+                        <td class="text-white bg-secondary">@zamowienie.DataZamowienia.ToString("dd-MM-yyyy HH:mm")</td>
+                        <td class="text-white bg-secondary">
+                            @(zamowienie.Status == 0 ? "Anulowane" : "Zrealizowane")
+                        </td>
                         <td class="text-white bg-secondary">
                             <a asp-action="ShowOrder" asp-route-id="@zamowienie.Id" class="btn btn-info text-white">Zarządzaj</a>
                             <a asp-action="DeleteOrder" asp-route-id="@zamowienie.Id" class="btn btn-danger text-white">Usuń</a>
