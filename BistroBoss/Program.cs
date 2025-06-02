@@ -30,7 +30,7 @@ else
     app.UseExceptionHandler("/Home/Error");
 }
 
-// Apply migrations at startup
+
 //using (var scope = app.Services.CreateScope())
 //{
 //    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
