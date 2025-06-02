@@ -118,7 +118,7 @@ namespace BistroBoss.Controllers
             var user = _dbContext.Uzytkownicy.Find(userId);
             var zamowienia = _dbContext.Zamowienia;
 
-                var mojeZamowienia = zamowienia.Where(z => z.UzytkownikId == user.Id).ToList();
+                var mojeZamowienia = zamowienia.Where(z => z.UzytkownikId == user.Id).OrderByDescending(z => z.Id).ToList();
                 return View(mojeZamowienia);
 
         }

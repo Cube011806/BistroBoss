@@ -1,51 +1,55 @@
-﻿@model ICollection<Zamowienie>
-
+﻿@using Microsoft.AspNetCore.Identity
+@model ICollection<Zamowienie>
+@inject UserManager<Uzytkownik> UserManager
+@{
+    var id = UserManager.GetUserId(User);
+}
 <style>
     .search-bar {
-        margin-top: 30px;
-        padding: 20px;
-        border-bottom: 1px solid #ccc;
-        margin-bottom: 20px;
+    margin-top: 30px;
+    padding: 20px;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
     }
 
     .search-input {
-        width: 300px;
-        padding: 10px;
-        font-size: 16px;
-        border: 1px solid #ccc;
-        border-radius: 25px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    width: 300px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
     }
 
-        .search-input:focus {
-            outline: none;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            border-color: #007bff;
-        }
+    .search-input:focus {
+    outline: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-color: #007bff;
+    }
 
     .search-button {
-        padding: 10px 20px;
-        font-size: 16px;
-        border-radius: 25px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 25px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-        .search-button:hover {
-            background-color: #0056b3;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
+    .search-button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
 
     .btn-light.btn-info.btn-lg {
-        background-color: #17a2b8;
-        color: white;
-        border: none;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
     }
 </style>
 
@@ -71,7 +75,7 @@
     <div class="search-bar">
         <form asp-controller="Manage" asp-action="ShowAllOrders" method="get">
             <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                <input type="number" name="KwerendaWyszukujaca" placeholder="Wyszukaj zamówienie po Id" min="1" class="form-control search-input" />
+                <input type="number" name="KwerendaWyszukujaca" placeholder="Wyszukaj zamówienie po identyfikatorze" min="1" class="form-control search-input" style="width: 28%; max-width: 450px;" />
                 <button type="submit" class="btn btn-primary search-button">Szukaj</button>
             </div>
         </form>
@@ -129,7 +133,10 @@
                         </td>
                         <td class="text-white bg-secondary">
                             <a asp-action="ShowOrder" asp-route-id="@zamowienie.Id" class="btn btn-info text-white">Zarządzaj</a>
-                            <a asp-action="DeleteOrder" asp-route-id="@zamowienie.Id" class="btn btn-danger text-white">Usuń</a>
+                            @if (User.Identity.IsAuthenticated && UserManager.FindByIdAsync(id).Result.AccessLevel == 2)
+                            {
+                                <a asp-action="DeleteOrder" asp-route-id="@zamowienie.Id" class="btn btn-danger text-white">Usuń</a>
+                            }
                         </td>
                     </tr>
                 }
@@ -141,35 +148,40 @@
         Pokaż zamówienia archiwalne
     </button>
 
-    <div id="archiwalneZamowienia" class="collapse">
-        <table class="table table-bordered table-striped mt-3">
-            <thead class="bg-dark text-white">
-                <tr>
-                    <th>ID</th>
-                    <th>Wartość zamówienia</th>
-                    <th>Data zamówienia</th>
-                    <th>Status</th>
-                    <th>Akcje</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var zamowienie in Model.Where(z => z.Status == 0 || z.Status == 4))
-                {
+    <div id="archiwalneZamowienia" class="collapse @(ViewBag.ShowArchiwalne == true ? "show" : "")">
+        <div class="table-container mb-5">
+            <table class="table table-bordered table-striped mt-3">
+                <thead class="bg-dark text-white">
                     <tr>
-                        <td class="text-white bg-secondary">@zamowienie.Id</td>
-                        <td class="text-white bg-secondary">@zamowienie.CenaCalkowita.ToString("C")</td>
-                        <td class="text-white bg-secondary">@zamowienie.DataZamowienia.ToString("dd-MM-yyyy HH:mm")</td>
-                        <td class="text-white bg-secondary">
-                            @(zamowienie.Status == 0 ? "Anulowane" : "Zrealizowane")
-                        </td>
-                        <td class="text-white bg-secondary">
-                            <a asp-action="ShowOrder" asp-route-id="@zamowienie.Id" class="btn btn-info text-white">Zarządzaj</a>
-                            <a asp-action="DeleteOrder" asp-route-id="@zamowienie.Id" class="btn btn-danger text-white">Usuń</a>
-                        </td>
+                        <th>ID</th>
+                        <th>Wartość zamówienia</th>
+                        <th>Data zamówienia</th>
+                        <th>Status</th>
+                        <th>Akcje</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var zamowienie in Model.Where(z => z.Status == 0 || z.Status == 4))
+                    {
+                        <tr>
+                            <td class="text-white bg-secondary">@zamowienie.Id</td>
+                            <td class="text-white bg-secondary">@zamowienie.CenaCalkowita.ToString("C")</td>
+                            <td class="text-white bg-secondary">@zamowienie.DataZamowienia.ToString("dd-MM-yyyy HH:mm")</td>
+                            <td class="text-white bg-secondary">
+                                @(zamowienie.Status == 0 ? "Anulowane" : "Zrealizowane")
+                            </td>
+                            <td class="text-white bg-secondary">
+                                <a asp-action="ShowOrder" asp-route-id="@zamowienie.Id" class="btn btn-info text-white">Zarządzaj</a>
+                                @if (User.Identity.IsAuthenticated && UserManager.FindByIdAsync(id).Result.AccessLevel == 2)
+                                {
+                                    <a asp-action="DeleteOrder" asp-route-id="@zamowienie.Id" class="btn btn-danger text-white">Usuń</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 }
 else
