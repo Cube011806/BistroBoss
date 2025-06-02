@@ -12,6 +12,7 @@ namespace BistroBoss.Controllers
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.IdentityModel.Tokens;
     using NuGet.Protocol;
     using System.Security.Claims;
     using System.Text.Json;
@@ -144,6 +145,11 @@ namespace BistroBoss.Controllers
         [HttpPost]
         public IActionResult AddReview(Opinia opinia)
         {
+            if(opinia.Ocena < 1 || opinia.Ocena > 5 || opinia.Komentarz.IsNullOrEmpty())
+            {
+                TempData["ErrorMessage"] = "Wszystkie pola muszą być wypełnione!";
+                return RedirectToAction("AddReview", new { opinia.ZamowienieId });
+            }
             opinia.UzytkownikId = _userManager.GetUserId(User);
             _dbContext.Opinie.Add(opinia);
 
@@ -176,7 +182,8 @@ namespace BistroBoss.Controllers
             }
             return JsonSerializer.Deserialize<KoszykSessionDto>(json) ?? new KoszykSessionDto();
         }
-        public IActionResult ReOrder(int id)
+        [HttpPost]
+        public IActionResult ReOrder(int id, bool sposobDostawy, string Miejscowosc, string Ulica, string NumerBudynku, string KodPocztowy)
         {
             var userId = _userManager.GetUserId(User);
             var czyMaAktualneZamowienie = _dbContext.Zamowienia.Where(z => z.UzytkownikId == userId).Any(z => z.Status != 4 && z.Status != 0);
@@ -194,11 +201,16 @@ namespace BistroBoss.Controllers
                 Status = 1,
                 PrzewidywanyCzasRealizacji = oldOrder.PrzewidywanyCzasRealizacji,
                 CenaCalkowita = oldOrder.CenaCalkowita,
-                Ulica = oldOrder.Ulica,
-                NumerBudynku = oldOrder.NumerBudynku,
-                Miejscowosc = oldOrder.Miejscowosc,
-                KodPocztowy = oldOrder.KodPocztowy,
-                DataZamowienia = oldOrder.DataZamowienia,
+                SposobDostawy = sposobDostawy,
+                Imie = oldOrder.Imie,
+                Nazwisko = oldOrder.Nazwisko,
+                Email = oldOrder.Email,
+                NumerTelefonu = oldOrder.NumerTelefonu,
+                Ulica = sposobDostawy ? Ulica : "",
+                NumerBudynku = sposobDostawy ? NumerBudynku : "",
+                Miejscowosc = sposobDostawy ? Miejscowosc : "",
+                KodPocztowy = sposobDostawy ? KodPocztowy : "",
+                DataZamowienia = DateTime.Now,
                 ZamowioneProdukty = oldOrder.ZamowioneProdukty.Select(zp => new ZamowienieProdukt
                 {
                     ProduktId = zp.ProduktId,

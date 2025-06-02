@@ -16,8 +16,10 @@
             _settings = options.Value;
         }
 
+        
         public void SendEmail(string toEmail, string subject, string message)
         {
+            /*
             var email = new MimeMessage();
             email.From.Add(new MailboxAddress(_settings.SenderName, _settings.SenderEmail));
             email.To.Add(MailboxAddress.Parse(toEmail));
@@ -31,7 +33,9 @@
             smtp.Authenticate(_settings.Username, _settings.Password);
             smtp.Send(email);
             smtp.Disconnect(true);
+            */
         }
+        
     }
 
 

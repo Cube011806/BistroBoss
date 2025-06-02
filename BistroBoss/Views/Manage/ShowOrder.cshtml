@@ -1,4 +1,6 @@
 ﻿@model Zamowienie
+@using Microsoft.AspNetCore.Html
+
 
 @{
     ViewData["Title"] = "Szczegóły zamówienia";
@@ -22,33 +24,55 @@
 <style>
     /* Stronger selector and !important to override Bootstrap */
     div.card {
-    background-color: #444444 !important;
-    border: none;
-    border-radius: 10px;
-    color: white;
+        background-color: #444444 !important;
+        border: none;
+        border-radius: 10px;
+        color: white;
     }
 
     div.card-header {
-    background-color: #1a237e !important;
-    color: white !important;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    text-align: center;
-    padding: 1rem;
+        background-color: #1a237e !important;
+        color: white !important;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        text-align: center;
+        padding: 1rem;
     }
 
-    div.card-header h3 {
-    color: white !important;
-    margin: 0;
-    }
+        div.card-header h3 {
+            color: white !important;
+            margin: 0;
+        }
 
     div.card-body {
-    background-color: #444444 !important;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    padding: 1rem;
+        background-color: #444444 !important;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        padding: 1rem;
+    }
+
+    .star-display {
+        color: #ffc107; /* gold */
+        font-size: 1.5rem;
     }
 </style>
+
+@functions {
+    public IHtmlContent GetStars(int rating)
+    {
+        var fullStar = "&#9733;";
+        var emptyStar = "&#9734;";
+        var stars = new System.Text.StringBuilder();
+        for (int i = 1; i <= 5; i++)
+        {
+            if (i <= rating)
+                stars.Append(fullStar);
+            else
+                stars.Append(emptyStar);
+        }
+        return new HtmlString(stars.ToString());
+    }
+}
 
 <div class="container mt-4">
     <div class="card shadow-lg border-0">
@@ -88,7 +112,7 @@
                 }
                 else if (Model.Status == 3)
                 {
-                    if(Model.SposobDostawy)
+                    if (Model.SposobDostawy)
                     {
                         <span class="text-success">W dostawie</span>
                     }
@@ -104,7 +128,7 @@
             </p>
             @if (Model.Opinia != null)
             {
-                <p><strong>Opinia: </strong>@Model.Opinia.Ocena - @Model.Opinia.Komentarz</p>
+                <p><strong>Opinia: </strong><span class="star-display">@GetStars(Model.Opinia.Ocena)</span> - @Model.Opinia.Komentarz</p>
             }
             @if (Model.Status == 1)
             {
@@ -112,7 +136,7 @@
             }
             else if (Model.Status == 2)
             {
-                if(Model.SposobDostawy)
+                if (Model.SposobDostawy)
                 {
                     <a asp-action="SetInDelivery" asp-route-id="@Model.Id" class="btn btn-success text-white">Ustaw status zamówienia jako 'W dostawie'</a>
                 }
@@ -133,40 +157,42 @@
     </div>
 
     <h3 class="text-center text-white mt-4">Zamówione produkty</h3>
-    <table class="table table-bordered table-striped">
-        <thead class="bg-dark text-white">
-            <tr>
-                <th>Nazwa</th>
-                <th>Opis</th>
-                <th>Cena</th>
-                <th>Czas przygotowania</th>
-                <th>Kategoria</th>
-                <th>Zdjęcie</th>
-                <th>Ilość</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var produkt in Model.ZamowioneProdukty)
-            {
+    <div class="mb-5">
+        <table class="table table-bordered table-striped">
+            <thead class="bg-dark text-white">
                 <tr>
-                    <td class="bg-secondary text-white">@produkt.Produkt.Nazwa</td>
-                    <td class="bg-secondary text-white">@produkt.Produkt.Opis</td>
-                    <td class="bg-secondary text-white">@produkt.Produkt.Cena.ToString("C")</td>
-                    <td class="bg-secondary text-white">@produkt.Produkt.CzasPrzygotowania min</td>
-                    <td class="bg-secondary text-white">@produkt.Produkt.Kategoria.Nazwa</td>
-                    <td class="bg-secondary text-white">
-                        @if (!string.IsNullOrEmpty(produkt.Produkt.Zdjecie))
-                        {
-                            <img src="@produkt.Produkt.Zdjecie" alt="Zdjęcie produktu" class="img-thumbnail" style="width: 100px;" />
-                        }
-                        else
-                        {
-                            <span>Brak zdjęcia</span>
-                        }
-                    </td>
-                    <td class="bg-secondary text-white">@produkt.Ilosc</td>
+                    <th>Nazwa</th>
+                    <th>Opis</th>
+                    <th>Cena</th>
+                    <th>Czas przygotowania</th>
+                    <th>Kategoria</th>
+                    <th>Zdjęcie</th>
+                    <th>Ilość</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var produkt in Model.ZamowioneProdukty)
+                {
+                    <tr>
+                        <td class="bg-secondary text-white">@produkt.Produkt.Nazwa</td>
+                        <td class="bg-secondary text-white">@produkt.Produkt.Opis</td>
+                        <td class="bg-secondary text-white">@produkt.Produkt.Cena.ToString("C")</td>
+                        <td class="bg-secondary text-white">@produkt.Produkt.CzasPrzygotowania min</td>
+                        <td class="bg-secondary text-white">@produkt.Produkt.Kategoria.Nazwa</td>
+                        <td class="bg-secondary text-white">
+                            @if (!string.IsNullOrEmpty(produkt.Produkt.Zdjecie))
+                            {
+                                <img src="@produkt.Produkt.Zdjecie" alt="Zdjęcie produktu" class="img-thumbnail" style="width: 100px;" />
+                            }
+                            else
+                            {
+                                <span>Brak zdjęcia</span>
+                            }
+                        </td>
+                        <td class="bg-secondary text-white">@produkt.Ilosc</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

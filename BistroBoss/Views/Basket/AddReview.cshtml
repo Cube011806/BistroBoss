@@ -16,34 +16,48 @@
 }
 
 <style>
+    /* Override layout card to dark theme */
     .card {
         background-color: #444444 !important;
         color: #f1f1f1 !important;
-        border: none;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        transition: none;
+        border: none !important;
+        border-radius: 10px !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+        transition: none !important;
     }
 
     .card-header {
-        background-color: #1a237e; /* Dark Blue */
-        color: white !important; /* White text */
+        background-color: #1a237e !important; /* Dark Blue */
+        color: white !important;
         text-align: center;
-        border-radius: 10px 10px 0 0;
-        border-bottom: none;
+        border-radius: 10px 10px 0 0 !important;
+        border-bottom: none !important;
     }
+
+        .card-header h3 {
+            color: white !important;
+        }
 
     .form-label {
-        color: #f1f1f1;
-        font-weight: 600;
+        color: #f1f1f1 !important;
+        font-weight: 600 !important;
     }
 
-    textarea.form-control, input.form-control {
-        background-color: #6c757d;
-        color: white;
-        border: 1px solid #444;
+    textarea.form-control {
+        background-color: white !important;
+        color: #212529 !important; /* standard black text color */
+        border: 1px solid #ccc !important;
+        box-shadow: 0 .1rem .3rem rgba(0, 0, 0, .1) !important;
     }
 
+    input.form-control {
+        background-color: #6c757d !important;
+        color: white !important;
+        border: 1px solid #444 !important;
+        box-shadow: none !important;
+    }
+
+    /* Star rating styling */
     .star-rating {
         display: flex;
         flex-direction: row-reverse;
@@ -60,6 +74,7 @@
             color: #ccc;
             cursor: pointer;
             transition: color 0.2s;
+            user-select: none;
         }
 
         .star-rating input:checked ~ label {
@@ -68,10 +83,9 @@
 
         .star-rating label:hover,
         .star-rating label:hover ~ label {
-            color: #ccc; /* no hover effect */
+            color: #ffc107;
         }
 
-        /* Optional: disable pointer events on label if you want to remove hover effect completely */
         .star-rating label {
             pointer-events: auto;
         }
@@ -91,20 +105,21 @@
                         <div class="form-group mb-4">
                             <label class="form-label">Ocena</label>
                             <div class="star-rating">
-                                <input type="radio" id="star1" name="Ocena" value="1" @(Model.Ocena == 1 ? "checked" : "") />
-                                <label for="star1">&#9733;</label>
-
-                                <input type="radio" id="star2" name="Ocena" value="2" @(Model.Ocena == 2 ? "checked" : "") />
-                                <label for="star2">&#9733;</label>
-
-                                <input type="radio" id="star3" name="Ocena" value="3" @(Model.Ocena == 3 ? "checked" : "") />
-                                <label for="star3">&#9733;</label>
+                                <input type="radio" id="star5" name="Ocena" value="5" @(Model.Ocena == 5 ? "checked" : "") />
+                                <label for="star5">&#9733;</label>
 
                                 <input type="radio" id="star4" name="Ocena" value="4" @(Model.Ocena == 4 ? "checked" : "") />
                                 <label for="star4">&#9733;</label>
 
-                                <input type="radio" id="star5" name="Ocena" value="5" @(Model.Ocena == 5 ? "checked" : "") />
-                                <label for="star5">&#9733;</label>
+                                <input type="radio" id="star3" name="Ocena" value="3" @(Model.Ocena == 3 ? "checked" : "") />
+                                <label for="star3">&#9733;</label>
+
+                                <input type="radio" id="star2" name="Ocena" value="2" @(Model.Ocena == 2 ? "checked" : "") />
+                                <label for="star2">&#9733;</label>
+
+                                <input type="radio" id="star1" name="Ocena" value="1" @(Model.Ocena == 1 ? "checked" : "") />
+                                <label for="star1">&#9733;</label>
+
                             </div>
                         </div>
 
