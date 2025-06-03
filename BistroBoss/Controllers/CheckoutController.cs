@@ -171,11 +171,11 @@ namespace BistroBoss.Controllers
                 </html>";
                 if (!zamowienie.SposobDostawy)
                 {
-                    _emailService.SendEmail(user.Email, "Nowe zamówienie", message2);
+                    _emailService.SendEmail(zamowienie.Email, "Nowe zamówienie", message2);
                 }
                 else
                 {
-                    _emailService.SendEmail(user.Email, "Nowe zamówienie", message);
+                    _emailService.SendEmail(zamowienie.Email, "Nowe zamówienie", message);
                 }
 
                 TempData["SuccessMessage"] = "Zamówienie zostało złożone, dziękujemy! Numer zamówienia: " + zamowienie.Id;
@@ -271,11 +271,11 @@ namespace BistroBoss.Controllers
                 </html>";
                 if (!zamowienie.SposobDostawy)
                 {
-                    _emailService.SendEmail(user.Email, "Nowe zamówienie", message2);
+                    _emailService.SendEmail(zamowienie.Email, "Nowe zamówienie", message2);
                 }
                 else
                 {
-                    _emailService.SendEmail(user.Email, "Nowe zamówienie", message);
+                    _emailService.SendEmail(zamowienie.Email, "Nowe zamówienie", message);
                 }
 
                 TempData["SuccessMessage"] = "Zamówienie zostało złożone, dziękujemy! Numer zamówienia: " + zamowienie.Id;

@@ -321,11 +321,11 @@ namespace BistroBoss.Controllers
                 </html>";
             if (!newOrder.SposobDostawy)
             {
-                _emailService.SendEmail(user.Email, "Nowe zamówienie", message2);
+                _emailService.SendEmail(newOrder.Email, "Nowe zamówienie", message2);
             }
             else
             {
-                _emailService.SendEmail(user.Email, "Nowe zamówienie", message);
+                _emailService.SendEmail(newOrder.Email, "Nowe zamówienie", message);
             }
             TempData["SuccessMessage"] = "Zamówienie zostało złożone, dziękujemy! Numer zamówienia: " + newOrder.Id;
             return RedirectToAction("ShowMyOrders", "Basket");

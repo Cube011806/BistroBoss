@@ -150,11 +150,11 @@ namespace BistroBoss.Controllers
             </html>";
             if (!zamowienie.SposobDostawy)
             {
-                _emailService.SendEmail(user.Email, "Zamówienie gotowe do odbioru", message2);
+                _emailService.SendEmail(zamowienie.Email, "Zamówienie gotowe do odbioru", message2);
             }
             else
             {
-                _emailService.SendEmail(user.Email, "Zamówienie w drodze", message);
+                _emailService.SendEmail(zamowienie.Email, "Zamówienie w drodze", message);
             }
             
             _dbContext.SaveChanges();
