@@ -20,11 +20,13 @@ namespace BistroBoss.Controllers
     public class BasketController : BaseController
     {
         private readonly UserManager<Uzytkownik> _userManager;
+        private readonly IEmailService _emailService;
         private const string SessionKeyKoszyk = "_Koszyk";
 
-        public BasketController(ApplicationDbContext dbContext, UserManager<Uzytkownik> userManager) : base(dbContext)
+        public BasketController(ApplicationDbContext dbContext, UserManager<Uzytkownik> userManager, IEmailService emailService) : base(dbContext)
         {
             _userManager = userManager;
+            _emailService = emailService;
         }
 
         public IActionResult Index()
@@ -278,6 +280,45 @@ namespace BistroBoss.Controllers
             };
             _dbContext.Zamowienia.Add(newOrder);
             _dbContext.SaveChanges();
+            var user = _dbContext.Uzytkownicy.FirstOrDefault(u => u.Id == userId);
+            string message = $@"
+                <html>
+                    <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
+                        <h2 style='color: #4CAF50;'>Dziękujemy za Twoje zamówienie!</h2>
+                        <p><strong>Numer zamówienia:</strong> {newOrder.Id}</p>
+                        <p><strong>Data zamówienia:</strong> {newOrder.DataZamowienia:dd.MM.yyyy HH:mm}</p>
+                        <p><strong>Przewidywany czas realizacji:</strong> {newOrder.PrzewidywanyCzasRealizacji} minut</p>
+                        <p><strong>Cena całkowita:</strong> {newOrder.CenaCalkowita} zł</p>
+                        <p><strong>Adres dostawy:</strong><br />
+                            {newOrder.Miejscowosc}, {newOrder.Ulica} {newOrder.NumerBudynku}<br />
+                            {newOrder.KodPocztowy}
+                        </p>
+                        <hr style='margin: 20px 0;' />
+                        <p>W razie pytań prosimy o kontakt z naszym działem obsługi klienta.</p>
+                        <p style='color: #777;'>Pozdrawiamy,<br />Zespół BistroBoss</p>
+                    </body>
+                </html>";
+            string message2 = $@"
+                <html>
+                    <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
+                        <h2 style='color: #4CAF50;'>Dziękujemy za Twoje zamówienie!</h2>
+                        <p><strong>Numer zamówienia:</strong> {newOrder.Id}</p>
+                        <p><strong>Data zamówienia:</strong> {newOrder.DataZamowienia:dd.MM.yyyy HH:mm}</p>
+                        <p><strong>Przewidywany czas realizacji:</strong> {newOrder.PrzewidywanyCzasRealizacji} minut</p>
+                        <p><strong>Cena całkowita:</strong> {newOrder.CenaCalkowita} zł</p>
+                        <hr style='margin: 20px 0;' />
+                        <p>W razie pytań prosimy o kontakt z naszym działem obsługi klienta.</p>
+                        <p style='color: #777;'>Pozdrawiamy,<br />Zespół BistroBoss</p>
+                    </body>
+                </html>";
+            if (!newOrder.SposobDostawy)
+            {
+                _emailService.SendEmail(user.Email, "Nowe zamówienie", message2);
+            }
+            else
+            {
+                _emailService.SendEmail(user.Email, "Nowe zamówienie", message);
+            }
             TempData["SuccessMessage"] = "Zamówienie zostało złożone, dziękujemy! Numer zamówienia: " + newOrder.Id;
             return RedirectToAction("ShowMyOrders", "Basket");
 

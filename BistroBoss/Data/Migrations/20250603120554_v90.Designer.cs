@@ -4,6 +4,7 @@ using BistroBoss.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BistroBoss.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250603120554_v90")]
+    partial class v90
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -522,8 +525,7 @@ namespace BistroBoss.Data.Migrations
                 {
                     b.HasOne("BistroBoss.Models.Uzytkownik", "Uzytkownik")
                         .WithOne("Koszyk")
-                        .HasForeignKey("BistroBoss.Models.Koszyk", "UzytkownikId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("BistroBoss.Models.Koszyk", "UzytkownikId");
 
                     b.HasOne("BistroBoss.Models.Zamowienie", "Zamowienie")
                         .WithMany()

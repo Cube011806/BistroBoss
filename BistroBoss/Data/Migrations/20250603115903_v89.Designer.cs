@@ -4,6 +4,7 @@ using BistroBoss.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BistroBoss.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250603115903_v89")]
+    partial class v89
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,6 +156,8 @@ namespace BistroBoss.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UzytkownikId");
+
+                    b.HasIndex("ZamowienieId");
 
                     b.ToTable("Opinie");
                 });
@@ -522,8 +527,7 @@ namespace BistroBoss.Data.Migrations
                 {
                     b.HasOne("BistroBoss.Models.Uzytkownik", "Uzytkownik")
                         .WithOne("Koszyk")
-                        .HasForeignKey("BistroBoss.Models.Koszyk", "UzytkownikId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("BistroBoss.Models.Koszyk", "UzytkownikId");
 
                     b.HasOne("BistroBoss.Models.Zamowienie", "Zamowienie")
                         .WithMany()
@@ -561,7 +565,15 @@ namespace BistroBoss.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BistroBoss.Models.Zamowienie", "Zamowienie")
+                        .WithMany()
+                        .HasForeignKey("ZamowienieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Uzytkownik");
+
+                    b.Navigation("Zamowienie");
                 });
 
             modelBuilder.Entity("BistroBoss.Models.Produkt", b =>
@@ -578,14 +590,12 @@ namespace BistroBoss.Data.Migrations
             modelBuilder.Entity("BistroBoss.Models.Zamowienie", b =>
                 {
                     b.HasOne("BistroBoss.Models.Opinia", "Opinia")
-                        .WithOne("Zamowienie")
-                        .HasForeignKey("BistroBoss.Models.Zamowienie", "OpiniaId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .WithOne()
+                        .HasForeignKey("BistroBoss.Models.Zamowienie", "OpiniaId");
 
                     b.HasOne("BistroBoss.Models.Uzytkownik", "Uzytkownik")
                         .WithMany("Zamowienia")
-                        .HasForeignKey("UzytkownikId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UzytkownikId");
 
                     b.Navigation("Opinia");
 
@@ -670,12 +680,6 @@ namespace BistroBoss.Data.Migrations
             modelBuilder.Entity("BistroBoss.Models.Koszyk", b =>
                 {
                     b.Navigation("KoszykProdukty");
-                });
-
-            modelBuilder.Entity("BistroBoss.Models.Opinia", b =>
-                {
-                    b.Navigation("Zamowienie")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("BistroBoss.Models.Produkt", b =>
