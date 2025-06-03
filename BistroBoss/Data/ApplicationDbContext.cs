@@ -55,15 +55,31 @@ namespace BistroBoss.Data
                 .HasIndex(k => k.Nazwa)
                 .IsUnique();
 
-            //modelBuilder.Entity<Zamowienie>()
-            //    .HasOne(z => z.Koszyk)
-            //    .WithOne()
-            //    .HasForeignKey<Zamowienie>(z => z.KoszykId)
-            //    .OnDelete(DeleteBehavior.Restrict);
-            //modelBuilder.Entity<Koszyk>()
-            //    .HasOne(k => k.Zamowienie)
-            //    .WithOne(z => z.Koszyk)
-            //    .HasForeignKey<Koszyk>(k => k.ZamowienieId);
+            modelBuilder.Entity<Uzytkownik>()
+                    .HasMany(u => u.Zamowienia)
+                    .WithOne(z => z.Uzytkownik)
+                    .HasForeignKey(z => z.UzytkownikId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Uzytkownik>()
+                .HasMany(u => u.Opinie)
+                .WithOne(o => o.Uzytkownik)
+                .HasForeignKey(o => o.UzytkownikId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Zamowienie>()
+                .HasOne(z => z.Opinia)
+                .WithOne(o => o.Zamowienie)
+                .HasForeignKey<Zamowienie>(z => z.OpiniaId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Koszyk>()
+                .HasOne(k => k.Uzytkownik)
+                .WithOne(u => u.Koszyk)
+                .HasForeignKey<Koszyk>(k => k.UzytkownikId)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
+
     }
-}
+    }
+
