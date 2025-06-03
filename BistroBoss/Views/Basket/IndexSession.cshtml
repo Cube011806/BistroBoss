@@ -1,4 +1,4 @@
-﻿@model KoszykSessionDto
+﻿@model Koszyk
 
 @{
     ViewData["Title"] = "Twój Koszyk (Gość)";
@@ -97,7 +97,7 @@
                 </div>
                 <div class="card-body">
 
-                    @if (!Model.Produkty.Any())
+                    @if (!Model.KoszykProdukty.Any())
                     {
                         <p class="text-center">Koszyk jest pusty.</p>
                     }
@@ -114,13 +114,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model.Produkty)
+                                @foreach (var item in Model.KoszykProdukty)
                                 {
                                     <tr>
-                                        <td class="text-white bg-secondary">@item.Nazwa</td>
+                                        <td class="text-white bg-secondary">@item.Produkt.Nazwa</td>
                                         <td class="text-white bg-secondary">@item.Ilosc</td>
-                                        <td class="text-white bg-secondary">@item.Cena.ToString("c")</td>
-                                        <td class="text-white bg-secondary">@(item.Cena * item.Ilosc) zł</td>
+                                        <td class="text-white bg-secondary">@item.Produkt.Cena.ToString("c")</td>
+                                        <td class="text-white bg-secondary">@(item.Produkt.Cena * item.Ilosc) zł</td>
                                         <td class="text-white bg-secondary">
                                             <form asp-action="RemoveFromBasket" asp-route-id="@item.ProduktId" method="post">
                                                 <button class="btn btn-danger btn-sm">Usuń produkt</button>
@@ -132,7 +132,7 @@
                         </table>
 
                         <div class="text-end mt-3">
-                            <h5><strong>Łączna cena: @Model.Produkty.Sum(p => p.Cena * p.Ilosc).ToString("c")</strong></h5>
+                            <h5><strong>Łączna cena: @Model.KoszykProdukty.Sum(p => p.Produkt.Cena * p.Ilosc).ToString("c")</strong></h5>
                         </div>
                         <div class="text-end mt-3">
                             <a asp-controller="Checkout" asp-action="Index" class="btn btn-success">

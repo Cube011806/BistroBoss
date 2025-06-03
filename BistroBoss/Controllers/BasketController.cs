@@ -48,8 +48,43 @@ namespace BistroBoss.Controllers
             }
             else
             {
-                var koszyk = GetSessionKoszyk();
-                return View("IndexSession", koszyk);
+                var guestUser = _userManager.FindByIdAsync("40000000").GetAwaiter().GetResult();
+
+                if (guestUser == null)
+                {
+                    guestUser = new Uzytkownik
+                    {
+                        Id = "40000000",
+                        UserName = "guest-user",
+                        Email = "guest@example.com",
+                        EmailConfirmed = true,
+                        Imie = "Gość",
+                        Nazwisko = "Systemowy",
+                        AccessLevel = 0,
+                        Koszyk = new Koszyk()
+                    };
+
+                    var result = _userManager.CreateAsync(guestUser).GetAwaiter().GetResult();
+                    if (!result.Succeeded)
+                    {
+                        var errors = string.Join("; ", result.Errors.Select(e => e.Description));
+                        throw new Exception($"Nie udało się utworzyć użytkownika gościa: {errors}");
+                    }
+                }
+
+                var koszyk = _dbContext.Koszyki
+                    .Include(k => k.KoszykProdukty)
+                    .ThenInclude(kp => kp.Produkt)
+                    .FirstOrDefault(k => k.UzytkownikId == guestUser.Id);
+
+                if (koszyk == null)
+                {
+                    koszyk = new Koszyk { UzytkownikId = guestUser.Id };
+                    _dbContext.Koszyki.Add(koszyk);
+                    _dbContext.SaveChanges();
+                }
+
+                return View("IndexLoggedIn", koszyk);
             }
         }
 
@@ -59,59 +94,80 @@ namespace BistroBoss.Controllers
             if (produkt == null)
                 return NotFound();
 
+            string userId;
+
             if (User.Identity.IsAuthenticated)
             {
-                var userId = _userManager.GetUserId(User);
-                var koszyk = _dbContext.Koszyki
-                    .Include(k => k.KoszykProdukty)
-                    .FirstOrDefault(k => k.UzytkownikId == userId);
-
-                if (koszyk == null)
-                {
-                    koszyk = new Koszyk { UzytkownikId = userId };
-                    _dbContext.Koszyki.Add(koszyk);
-                }
-
-                var koszykProdukt = koszyk.KoszykProdukty.FirstOrDefault(kp => kp.ProduktId == produktId);
-                if (koszykProdukt != null)
-                {
-                    koszykProdukt.Ilosc++;
-                }
-                else
-                {
-                    var kp = new KoszykProdukt { ProduktId = produktId, Ilosc = 1 };
-                    _dbContext.KoszykProdukty.Add(kp);
-                    koszyk.KoszykProdukty.Add(kp);
-                }
-
-                _dbContext.SaveChanges();
-                TempData["SuccessMessage"] = "Produkt został pomyślnie dodany do koszyka!";
-                return RedirectToAction("Index","Menu");
+                userId = _userManager.GetUserId(User);
             }
             else
             {
-                var koszyk = GetSessionKoszyk();
-
-                var sessionProdukt = koszyk.Produkty.FirstOrDefault(p => p.ProduktId == produktId);
-                if (sessionProdukt != null)
-                {
-                    sessionProdukt.Ilosc++;
-                }
-                else
-                {
-                    koszyk.Produkty.Add(new KoszykSessionProduktDto
-                    {
-                        ProduktId = produkt.Id,
-                        Nazwa = produkt.Nazwa,
-                        Ilosc = 1
-                    });
-                }
-
-                SaveSessionKoszyk(koszyk);
-                TempData["SuccessMessage"] = "Produkt został pomyślnie dodany do koszyka!";
-                return RedirectToAction("Index", "Menu");
+                var guestUser = EnsureGuestUser();
+                userId = guestUser.Id;
             }
+
+            var koszyk = _dbContext.Koszyki
+                .Include(k => k.KoszykProdukty)
+                .FirstOrDefault(k => k.UzytkownikId == userId);
+
+            if (koszyk == null)
+            {
+                koszyk = new Koszyk { UzytkownikId = userId };
+                _dbContext.Koszyki.Add(koszyk);
+            }
+
+            var koszykProdukt = koszyk.KoszykProdukty.FirstOrDefault(kp => kp.ProduktId == produktId);
+            if (koszykProdukt != null)
+            {
+                koszykProdukt.Ilosc++;
+            }
+            else
+            {
+                var kp = new KoszykProdukt { ProduktId = produktId, Ilosc = 1 };
+                _dbContext.KoszykProdukty.Add(kp);
+                koszyk.KoszykProdukty.Add(kp);
+            }
+
+            _dbContext.SaveChanges();
+            TempData["SuccessMessage"] = "Produkt został pomyślnie dodany do koszyka!";
+            return RedirectToAction("Index", "Menu");
         }
+
+        private Uzytkownik EnsureGuestUser()
+        {
+            return EnsureGuestUserAsync().GetAwaiter().GetResult();
+        }
+
+        private async Task<Uzytkownik> EnsureGuestUserAsync()
+        {
+            var guestUser = await _userManager.FindByIdAsync("4000000");
+
+            if (guestUser == null)
+            {
+                guestUser = new Uzytkownik
+                {
+                    Id = "40000000",
+                    UserName = "guest-user",
+                    Email = "guest@example.com",
+                    EmailConfirmed = true,
+                    Imie = "Gość",
+                    Nazwisko = "Systemowy",
+                    AccessLevel = 0,
+                    Koszyk = new Koszyk()
+                };
+
+                var result = await _userManager.CreateAsync(guestUser);
+
+                if (!result.Succeeded)
+                {
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    throw new Exception("Guest user creation failed: " + errors);
+                }
+            }
+
+            return guestUser;
+        }
+
         public IActionResult ShowMyOrders()
         {
             var userId = _userManager.GetUserId(User);
