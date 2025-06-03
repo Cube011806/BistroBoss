@@ -107,30 +107,30 @@
                 <strong>Status:</strong>
                 @if (Model.Status == 0)
                 {
-                    <span class="text-warning">Anulowane</span>
+                    <span class="text-warning fw-bold">Anulowane</span>
                 }
                 else if (Model.Status == 1)
                 {
-                    <span class="text-info">Złożone</span>
+                    <span class="text-info fw-bold">Złożone</span>
                 }
                 else if (Model.Status == 2)
                 {
-                    <span class="text-primary">W przygotowaniu</span>
+                    <span class="text-primary fw-bold">W przygotowaniu</span>
                 }
                 else if (Model.Status == 3)
                 {
                     if (Model.SposobDostawy)
                     {
-                        <span class="text-success">W dostawie</span>
+                        <span class="text-success fw-bold">W dostawie</span>
                     }
                     else
                     {
-                        <span class="text-success">Gotowe do odbioru</span>
+                        <span class="text-success fw-bold">Gotowe do odbioru</span>
                     }
                 }
                 else if (Model.Status == 4)
                 {
-                    <span class="text-success">Zrealizowane</span>
+                    <span class="text-success fw-bold">Zrealizowane</span>
                 }
             </p>
             @if (Model.Opinia != null)
@@ -141,11 +141,11 @@
             {
                 <a asp-action="CancelOrder" asp-route-id="@Model.Id" class="btn btn-danger text-white">Anuluj zamówienie</a>
             }
-            else if (Model.Status == 4 && Model.Opinia == null)
+            else if (Model.Status == 4 && Model.Opinia == null && ViewBag.IsGuest == "0")
             {
                 <a asp-action="AddReview" asp-route-ZamowienieId="@Model.Id" class="btn btn-success text-white">Oceń zamówienie</a>
             }
-            @if (Model.Status == 4)
+            @if ((Model.Status == 4 || Model.Status == 0) && ViewBag.IsGuest == "0")
             {
                 <button class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#deliveryModal">Zamów ponownie</button>
             }

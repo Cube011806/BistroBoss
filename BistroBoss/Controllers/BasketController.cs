@@ -142,7 +142,7 @@ namespace BistroBoss.Controllers
 
         private async Task<Uzytkownik> EnsureGuestUserAsync()
         {
-            var guestUser = await _userManager.FindByIdAsync("4000000");
+            var guestUser = await _userManager.FindByIdAsync("40000000");
 
             if (guestUser == null)
             {
@@ -182,6 +182,14 @@ namespace BistroBoss.Controllers
         }
         public IActionResult ShowOrder(int id)
         {
+            if(User.Identity.IsAuthenticated)
+            {
+                ViewBag.IsGuest = "0";
+            }
+            else
+            {
+                ViewBag.IsGuest = "1";
+            }
             var zamowienie = _dbContext.Zamowienia
             .Include(z => z.ZamowioneProdukty)
                 .ThenInclude(zp => zp.Produkt)
@@ -332,7 +340,15 @@ namespace BistroBoss.Controllers
         [HttpPost]
         public IActionResult RemoveFromBasket(int id)
         {
-            var userId = _userManager.GetUserId(User);
+            string userId = "";
+            if(User.Identity.IsAuthenticated)
+            {
+                userId = _userManager.GetUserId(User);
+            }
+            else
+            {
+                userId = "40000000";
+            }
 
             var koszykProdukt = _dbContext.KoszykProdukty
                 .Include(kp => kp.Koszyk)

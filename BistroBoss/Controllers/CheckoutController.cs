@@ -38,9 +38,27 @@ namespace BistroBoss.Controllers
                         PhoneNumber = user.PhoneNumber
                     };
                 }
+                ViewBag.IsGuest = "0";
+            }
+            else
+            {
+                var userId = "40000000";
+                var user = _dbContext.Uzytkownicy.FirstOrDefault(u => u.Id == userId);
+
+                if (user != null)
+                {
+                    zamowienie.Uzytkownik = new Uzytkownik
+                    {
+                        Imie = user.Imie,
+                        Nazwisko = user.Nazwisko,
+                        Email = user.Email,
+                        PhoneNumber = user.PhoneNumber
+                    };
+                }
+                ViewBag.IsGuest = "1";
             }
 
-            return View(zamowienie);
+                return View(zamowienie);
         }
         [HttpPost]
         public IActionResult SubmitOrder(Zamowienie zamowienie, Uzytkownik uzytkownik, bool deliveryMethod)
@@ -62,81 +80,66 @@ namespace BistroBoss.Controllers
                     return RedirectToAction("Index");
                 }
             }
-            var koszyk = _dbContext.Koszyki.Include(k => k.KoszykProdukty).FirstOrDefault(k => k.UzytkownikId == _userManager.GetUserId(User));
-            float cenaCalkowita = 0;
-            foreach(var item in koszyk.KoszykProdukty)
+            var isUser = _dbContext.Uzytkownicy.FirstOrDefault(u => u.Id == _userManager.GetUserId(User));
+            if(isUser != null)
             {
-                var produkt = _dbContext.Produkty.FirstOrDefault(p => p.Id == item.ProduktId);
-                if (produkt != null)
+                var koszyk = _dbContext.Koszyki.Include(k => k.KoszykProdukty).FirstOrDefault(k => k.UzytkownikId == _userManager.GetUserId(User));
+                float cenaCalkowita = 0;
+                foreach (var item in koszyk.KoszykProdukty)
                 {
-                    
-                    var zamowienieprodukt = new ZamowienieProdukt
+                    var produkt = _dbContext.Produkty.FirstOrDefault(p => p.Id == item.ProduktId);
+                    if (produkt != null)
                     {
-                        ProduktId = produkt.Id,
-                        Ilosc = item.Ilosc,
-                        Cena = produkt.Cena
-                        
-                    };
-                    _dbContext.ZamowieniaProdukty.Add(zamowienieprodukt);
-                    zamowienie.ZamowioneProdukty.Add(zamowienieprodukt);
+
+                        var zamowienieprodukt = new ZamowienieProdukt
+                        {
+                            ProduktId = produkt.Id,
+                            Ilosc = item.Ilosc,
+                            Cena = produkt.Cena
+
+                        };
+                        _dbContext.ZamowieniaProdukty.Add(zamowienieprodukt);
+                        zamowienie.ZamowioneProdukty.Add(zamowienieprodukt);
+                    }
                 }
-            }
-            zamowienie.DataZamowienia = DateTime.Now;
-            //deliveryMethod - true = dostawa, false = odbiór osobisty
-            if (!deliveryMethod)
-            {
-                zamowienie.Miejscowosc = "";
-                zamowienie.Ulica = "";
-                zamowienie.NumerBudynku = "";
-                zamowienie.KodPocztowy = "";
-                zamowienie.SposobDostawy = false;
-            }
-            else
-            {
-                zamowienie.SposobDostawy = true;
-            }
+                zamowienie.DataZamowienia = DateTime.Now;
+                //deliveryMethod - true = dostawa, false = odbiór osobisty
+                if (!deliveryMethod)
+                {
+                    zamowienie.Miejscowosc = "";
+                    zamowienie.Ulica = "";
+                    zamowienie.NumerBudynku = "";
+                    zamowienie.KodPocztowy = "";
+                    zamowienie.SposobDostawy = false;
+                }
+                else
+                {
+                    zamowienie.SposobDostawy = true;
+                }
                 var userId = "";
-            if (User.Identity.IsAuthenticated)
-            {
                 zamowienie.UzytkownikId = _userManager.GetUserId(User);
                 userId = _userManager.GetUserId(User);
-            }
-            else
-            {
-                //var guest = new Uzytkownik
-                //{
-                //    Imie = uzytkownik.Imie,
-                //    Nazwisko = uzytkownik.Nazwisko,
-                //    Email = uzytkownik.Email,
-                //    PhoneNumber = uzytkownik.PhoneNumber,
-                //    UserName = uzytkownik.Email
-                //};
-
-                //_dbContext.Users.Add(guest);
-                //_dbContext.SaveChanges();
-                //zamowienie.UzytkownikId = guest.Id;
-            }
-            zamowienie.Status = 1;
-            foreach(var produkt in koszyk.KoszykProdukty)
-            {
-                _dbContext.KoszykProdukty.Remove(produkt);
-            }
-            var czasMax = 0;
-            foreach (var produkt in zamowienie.ZamowioneProdukty)
-            {
-                cenaCalkowita += produkt.Cena * produkt.Ilosc;
-                if(czasMax < produkt.Produkt.CzasPrzygotowania)
+                zamowienie.Status = 1;
+                foreach (var produkt in koszyk.KoszykProdukty)
                 {
-                    czasMax = produkt.Produkt.CzasPrzygotowania;
+                    _dbContext.KoszykProdukty.Remove(produkt);
                 }
-            }
-            zamowienie.PrzewidywanyCzasRealizacji = czasMax;
-            zamowienie.CenaCalkowita = cenaCalkowita;
-            var user = _dbContext.Uzytkownicy.Find(userId);
-            user.Zamowienia.Add(zamowienie);
-            _dbContext.Uzytkownicy.Update(user);
-            _dbContext.SaveChanges();
-            string message = $@"
+                var czasMax = 0;
+                foreach (var produkt in zamowienie.ZamowioneProdukty)
+                {
+                    cenaCalkowita += produkt.Cena * produkt.Ilosc;
+                    if (czasMax < produkt.Produkt.CzasPrzygotowania)
+                    {
+                        czasMax = produkt.Produkt.CzasPrzygotowania;
+                    }
+                }
+                zamowienie.PrzewidywanyCzasRealizacji = czasMax;
+                zamowienie.CenaCalkowita = cenaCalkowita;
+                var user = _dbContext.Uzytkownicy.Find(userId);
+                user.Zamowienia.Add(zamowienie);
+                _dbContext.Uzytkownicy.Update(user);
+                _dbContext.SaveChanges();
+                string message = $@"
                 <html>
                     <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
                         <h2 style='color: #4CAF50;'>Dziękujemy za Twoje zamówienie!</h2>
@@ -153,7 +156,7 @@ namespace BistroBoss.Controllers
                         <p style='color: #777;'>Pozdrawiamy,<br />Zespół BistroBoss</p>
                     </body>
                 </html>";
-            string message2 = $@"
+                string message2 = $@"
                 <html>
                     <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
                         <h2 style='color: #4CAF50;'>Dziękujemy za Twoje zamówienie!</h2>
@@ -166,17 +169,119 @@ namespace BistroBoss.Controllers
                         <p style='color: #777;'>Pozdrawiamy,<br />Zespół BistroBoss</p>
                     </body>
                 </html>";
-            if (!zamowienie.SposobDostawy)
-            {
-                _emailService.SendEmail(user.Email, "Nowe zamówienie", message2);
+                if (!zamowienie.SposobDostawy)
+                {
+                    _emailService.SendEmail(user.Email, "Nowe zamówienie", message2);
+                }
+                else
+                {
+                    _emailService.SendEmail(user.Email, "Nowe zamówienie", message);
+                }
+
+                TempData["SuccessMessage"] = "Zamówienie zostało złożone, dziękujemy! Numer zamówienia: " + zamowienie.Id;
+                return RedirectToAction("ShowMyOrders", "Basket");
             }
             else
             {
-                _emailService.SendEmail(user.Email, "Nowe zamówienie", message);
-            }
+                var koszyk = _dbContext.Koszyki.Include(k => k.KoszykProdukty).FirstOrDefault(k => k.UzytkownikId == "40000000");
+                float cenaCalkowita = 0;
+                foreach (var item in koszyk.KoszykProdukty)
+                {
+                    var produkt = _dbContext.Produkty.FirstOrDefault(p => p.Id == item.ProduktId);
+                    if (produkt != null)
+                    {
 
-            TempData["SuccessMessage"] = "Zamówienie zostało złożone, dziękujemy! Numer zamówienia: " + zamowienie.Id;
-            return RedirectToAction("ShowMyOrders", "Basket");
+                        var zamowienieprodukt = new ZamowienieProdukt
+                        {
+                            ProduktId = produkt.Id,
+                            Ilosc = item.Ilosc,
+                            Cena = produkt.Cena
+
+                        };
+                        _dbContext.ZamowieniaProdukty.Add(zamowienieprodukt);
+                        zamowienie.ZamowioneProdukty.Add(zamowienieprodukt);
+                    }
+                }
+                zamowienie.DataZamowienia = DateTime.Now;
+                //deliveryMethod - true = dostawa, false = odbiór osobisty
+                if (!deliveryMethod)
+                {
+                    zamowienie.Miejscowosc = "";
+                    zamowienie.Ulica = "";
+                    zamowienie.NumerBudynku = "";
+                    zamowienie.KodPocztowy = "";
+                    zamowienie.SposobDostawy = false;
+                }
+                else
+                {
+                    zamowienie.SposobDostawy = true;
+                }
+                var userId = "";
+                zamowienie.UzytkownikId = "40000000";
+                userId = "40000000";
+                zamowienie.Status = 1;
+                foreach (var produkt in koszyk.KoszykProdukty)
+                {
+                    _dbContext.KoszykProdukty.Remove(produkt);
+                }
+                var czasMax = 0;
+                foreach (var produkt in zamowienie.ZamowioneProdukty)
+                {
+                    cenaCalkowita += produkt.Cena * produkt.Ilosc;
+                    if (czasMax < produkt.Produkt.CzasPrzygotowania)
+                    {
+                        czasMax = produkt.Produkt.CzasPrzygotowania;
+                    }
+                }
+                zamowienie.PrzewidywanyCzasRealizacji = czasMax;
+                zamowienie.CenaCalkowita = cenaCalkowita;
+                var user = _dbContext.Uzytkownicy.Find(userId);
+                user.Zamowienia.Add(zamowienie);
+                _dbContext.Uzytkownicy.Update(user);
+                _dbContext.SaveChanges();
+                string message = $@"
+                <html>
+                    <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
+                        <h2 style='color: #4CAF50;'>Dziękujemy za Twoje zamówienie!</h2>
+                        <p><strong>Numer zamówienia:</strong> {zamowienie.Id}</p>
+                        <p><strong>Data zamówienia:</strong> {zamowienie.DataZamowienia:dd.MM.yyyy HH:mm}</p>
+                        <p><strong>Przewidywany czas realizacji:</strong> {zamowienie.PrzewidywanyCzasRealizacji} minut</p>
+                        <p><strong>Cena całkowita:</strong> {zamowienie.CenaCalkowita} zł</p>
+                        <p><strong>Adres dostawy:</strong><br />
+                            {zamowienie.Miejscowosc}, {zamowienie.Ulica} {zamowienie.NumerBudynku}<br />
+                            {zamowienie.KodPocztowy}
+                        </p>
+                        <hr style='margin: 20px 0;' />
+                        <p>W razie pytań prosimy o kontakt z naszym działem obsługi klienta.</p>
+                        <p style='color: #777;'>Pozdrawiamy,<br />Zespół BistroBoss</p>
+                    </body>
+                </html>";
+                string message2 = $@"
+                <html>
+                    <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
+                        <h2 style='color: #4CAF50;'>Dziękujemy za Twoje zamówienie!</h2>
+                        <p><strong>Numer zamówienia:</strong> {zamowienie.Id}</p>
+                        <p><strong>Data zamówienia:</strong> {zamowienie.DataZamowienia:dd.MM.yyyy HH:mm}</p>
+                        <p><strong>Przewidywany czas realizacji:</strong> {zamowienie.PrzewidywanyCzasRealizacji} minut</p>
+                        <p><strong>Cena całkowita:</strong> {zamowienie.CenaCalkowita} zł</p>
+                        <hr style='margin: 20px 0;' />
+                        <p>W razie pytań prosimy o kontakt z naszym działem obsługi klienta.</p>
+                        <p style='color: #777;'>Pozdrawiamy,<br />Zespół BistroBoss</p>
+                    </body>
+                </html>";
+                if (!zamowienie.SposobDostawy)
+                {
+                    _emailService.SendEmail(user.Email, "Nowe zamówienie", message2);
+                }
+                else
+                {
+                    _emailService.SendEmail(user.Email, "Nowe zamówienie", message);
+                }
+
+                TempData["SuccessMessage"] = "Zamówienie zostało złożone, dziękujemy! Numer zamówienia: " + zamowienie.Id;
+                return RedirectToAction("ShowOrder", "Basket", new { id = zamowienie.Id});
+            }
+            
 
             //return RedirectToAction("OrderConfirmation", new { id = zamowienie.Id });
         }

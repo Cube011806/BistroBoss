@@ -68,7 +68,7 @@ namespace BistroBoss.Controllers
         }
         public IActionResult ShowUsers()
         {
-            var users = _dbContext.Uzytkownicy.Where(u=>u.Email != null).ToList();
+            var users = _dbContext.Uzytkownicy.Where(u=>u.Email != null && u.Id != "40000000").ToList();
             return View(users);
         }
         public IActionResult MakeAdmin(string id)
